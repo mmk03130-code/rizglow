@@ -1,0 +1,173 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@color/bg"
+    android:padding="24dp">
+
+    <TextView
+        android:id="@+id/btn_skip"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="end"
+        android:padding="12dp"
+        android:text="Skip"
+        android:textSize="15sp"
+        android:textColor="@color/muted" />
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1">
+
+        <!-- page 1 -->
+        <LinearLayout
+            android:id="@+id/page1"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:gravity="center">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="280dp"
+                android:background="@drawable/panel_wallpapers"
+                android:orientation="vertical"
+                android:gravity="center"
+                android:layout_marginBottom="32dp">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="✦"
+                    android:textSize="64sp"
+                    android:textColor="@color/accent_purple" />
+            </LinearLayout>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Wallpapers"
+                android:textSize="28sp"
+                android:textStyle="bold"
+                android:textColor="@color/text" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:text="Curated glow for your screen.\nRealistic, premium, never kiddie."
+                android:gravity="center"
+                android:textSize="15sp"
+                android:textColor="@color/muted" />
+        </LinearLayout>
+
+        <!-- page 2 -->
+        <LinearLayout
+            android:id="@+id/page2"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:gravity="center"
+            android:visibility="gone">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="280dp"
+                android:background="@drawable/panel_icons"
+                android:orientation="vertical"
+                android:gravity="center"
+                android:layout_marginBottom="32dp">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="❖"
+                    android:textSize="64sp"
+                    android:textColor="@color/accent_pink" />
+            </LinearLayout>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Icons"
+                android:textSize="28sp"
+                android:textStyle="bold"
+                android:textColor="@color/text" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:text="Matching icons for every bundle.\nOne vibe, head to toe."
+                android:gravity="center"
+                android:textSize="15sp"
+                android:textColor="@color/muted" />
+        </LinearLayout>
+
+        <!-- page 3 -->
+        <LinearLayout
+            android:id="@+id/page3"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:gravity="center"
+            android:visibility="gone">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="280dp"
+                android:background="@drawable/panel_widgets"
+                android:orientation="vertical"
+                android:gravity="center"
+                android:layout_marginBottom="32dp">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="◈"
+                    android:textSize="64sp"
+                    android:textColor="@color/accent_violet" />
+            </LinearLayout>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Widgets"
+                android:textSize="28sp"
+                android:textStyle="bold"
+                android:textColor="@color/text" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:text="Live widgets in your aesthetic.\nFloating pets coming soon."
+                android:gravity="center"
+                android:textSize="15sp"
+                android:textColor="@color/muted" />
+        </LinearLayout>
+    </FrameLayout>
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:orientation="horizontal"
+        android:layout_marginBottom="24dp">
+
+        <View android:id="@+id/dot1" android:layout_width="10dp" android:layout_height="10dp"
+            android:background="@drawable/dot_selected" android:layout_marginEnd="8dp" />
+        <View android:id="@+id/dot2" android:layout_width="10dp" android:layout_height="10dp"
+            android:background="@drawable/dot_unselected" android:layout_marginEnd="8dp" />
+        <View android:id="@+id/dot3" android:layout_width="10dp" android:layout_height="10dp"
+            android:background="@drawable/dot_unselected" />
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/btn_next"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/btn_primary"
+        android:gravity="center"
+        android:padding="18dp"
+        android:text="Next"
+        android:textSize="17sp"
+        android:textStyle="bold"
+        android:textColor="#0D0C11" />
+</LinearLayout>

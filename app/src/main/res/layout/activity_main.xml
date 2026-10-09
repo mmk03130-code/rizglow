@@ -1,0 +1,238 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@color/bg">
+
+    <!-- top bar -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:paddingStart="20dp"
+        android:paddingEnd="12dp"
+        android:paddingTop="16dp"
+        android:paddingBottom="8dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/brand_tm"
+            android:textSize="22sp"
+            android:textStyle="bold"
+            android:letterSpacing="0.08"
+            android:textColor="@color/text" />
+
+        <View android:layout_width="0dp" android:layout_height="1dp" android:layout_weight="1" />
+
+        <TextView
+            android:id="@+id/btn_about"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="12dp"
+            android:text="About"
+            android:textSize="14sp"
+            android:textColor="@color/muted" />
+    </LinearLayout>
+
+    <!-- tab content -->
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1">
+
+        <ScrollView
+            android:id="@+id/page_discover"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="20dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Featured bundles"
+                    android:textSize="20sp"
+                    android:textStyle="bold"
+                    android:textColor="@color/text" />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp"
+                    android:layout_marginBottom="16dp"
+                    android:text="Wallpapers + matching icons, one vibe."
+                    android:textSize="14sp"
+                    android:textColor="@color/muted" />
+
+                <LinearLayout
+                    android:id="@+id/discover_list"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical" />
+            </LinearLayout>
+        </ScrollView>
+
+        <ScrollView
+            android:id="@+id/page_wallpapers"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:visibility="gone">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="20dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Wallpapers"
+                    android:textSize="20sp"
+                    android:textStyle="bold"
+                    android:textColor="@color/text" />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp"
+                    android:layout_marginBottom="16dp"
+                    android:text="Unlock a bundle to browse its wallpapers."
+                    android:textSize="14sp"
+                    android:textColor="@color/muted" />
+
+                <LinearLayout
+                    android:id="@+id/wallpapers_list"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical" />
+            </LinearLayout>
+        </ScrollView>
+
+        <ScrollView
+            android:id="@+id/page_icons"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:visibility="gone">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="20dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Icons"
+                    android:textSize="20sp"
+                    android:textStyle="bold"
+                    android:textColor="@color/text" />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp"
+                    android:layout_marginBottom="16dp"
+                    android:text="Matching icon sets for every bundle."
+                    android:textSize="14sp"
+                    android:textColor="@color/muted" />
+
+                <LinearLayout
+                    android:id="@+id/icons_list"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical" />
+            </LinearLayout>
+        </ScrollView>
+
+        <LinearLayout
+            android:id="@+id/page_widgets"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:gravity="center"
+            android:padding="32dp"
+            android:visibility="gone">
+
+            <ImageView
+                android:layout_width="96dp"
+                android:layout_height="96dp"
+                android:src="@drawable/logo"
+                android:alpha="0.9" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:text="Widgets are brewing"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                android:textColor="@color/text" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:gravity="center"
+                android:text="Live glow widgets for your home screen.\nArriving in the next drop."
+                android:textSize="14sp"
+                android:textColor="@color/muted" />
+        </LinearLayout>
+    </FrameLayout>
+
+    <!-- bottom tabs -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:background="@color/surface"
+        android:paddingTop="10dp"
+        android:paddingBottom="14dp">
+
+        <LinearLayout
+            android:id="@+id/tab_discover"
+            android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1"
+            android:orientation="vertical" android:gravity="center" android:padding="6dp">
+            <View android:id="@+id/dot_discover" android:layout_width="6dp" android:layout_height="6dp"
+                android:background="@drawable/dot_selected" android:layout_marginBottom="6dp" />
+            <TextView android:id="@+id/label_discover" android:layout_width="wrap_content" android:layout_height="wrap_content"
+                android:text="Discover" android:textSize="13sp" android:textColor="@color/text" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/tab_wallpapers"
+            android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1"
+            android:orientation="vertical" android:gravity="center" android:padding="6dp">
+            <View android:id="@+id/dot_wallpapers" android:layout_width="6dp" android:layout_height="6dp"
+                android:background="@drawable/dot_selected" android:layout_marginBottom="6dp"
+                android:visibility="invisible" />
+            <TextView android:id="@+id/label_wallpapers" android:layout_width="wrap_content" android:layout_height="wrap_content"
+                android:text="Wallpapers" android:textSize="13sp" android:textColor="@color/muted" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/tab_icons"
+            android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1"
+            android:orientation="vertical" android:gravity="center" android:padding="6dp">
+            <View android:id="@+id/dot_icons" android:layout_width="6dp" android:layout_height="6dp"
+                android:background="@drawable/dot_selected" android:layout_marginBottom="6dp"
+                android:visibility="invisible" />
+            <TextView android:id="@+id/label_icons" android:layout_width="wrap_content" android:layout_height="wrap_content"
+                android:text="Icons" android:textSize="13sp" android:textColor="@color/muted" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/tab_widgets"
+            android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1"
+            android:orientation="vertical" android:gravity="center" android:padding="6dp">
+            <View android:id="@+id/dot_widgets" android:layout_width="6dp" android:layout_height="6dp"
+                android:background="@drawable/dot_selected" android:layout_marginBottom="6dp"
+                android:visibility="invisible" />
+            <TextView android:id="@+id/label_widgets" android:layout_width="wrap_content" android:layout_height="wrap_content"
+                android:text="Widgets" android:textSize="13sp" android:textColor="@color/muted" />
+        </LinearLayout>
+    </LinearLayout>
+</LinearLayout>

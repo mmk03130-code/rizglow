@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="bg">#0D0C11</color>
+    <color name="surface">#17161E</color>
+    <color name="surface2">#201F29</color>
+    <color name="text">#F5F2FA</color>
+    <color name="muted">#9A94AE</color>
+    <color name="accent_pink">#F5A8C0</color>
+    <color name="accent_purple">#B388FF</color>
+    <color name="accent_violet">#7C6CFF</color>
+    <color name="gold">#E8C87E</color>
+</resources>
