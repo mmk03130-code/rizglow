@@ -378,6 +378,16 @@ class MainActivity : Activity() {
             "Reminders" -> listOf("com.google.android.apps.tasks")
             "Health" -> listOf("com.google.android.apps.healthdata", "com.fitbit.FitbitMobile")
             "Wallet" -> listOf("com.google.android.apps.walletnfcrel")
+            "WhatsApp" -> listOf("com.whatsapp")
+            "WhatsApp Business" -> listOf("com.whatsapp.w4b")
+            "Instagram" -> listOf("com.instagram.android")
+            "TikTok" -> listOf("com.zhiliaoapp.musically", "com.ss.android.ugc.trill")
+            "Facebook" -> listOf("com.facebook.katana")
+            "X" -> listOf("com.twitter.android")
+            "Snapchat" -> listOf("com.snapchat.android")
+            "Pinterest" -> listOf("com.pinterest")
+            "Telegram" -> listOf("org.telegram.messenger")
+            "Google" -> listOf("com.google.android.googlequicksearchbox")
             else -> emptyList()
         }
         for (pkg in fallbackPkgs) {

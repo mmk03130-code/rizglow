@@ -93,6 +93,17 @@
         <package android:name="com.google.android.apps.healthdata" />
         <package android:name="com.fitbit.FitbitMobile" />
         <package android:name="com.google.android.apps.walletnfcrel" />
+        <package android:name="com.whatsapp" />
+        <package android:name="com.whatsapp.w4b" />
+        <package android:name="com.instagram.android" />
+        <package android:name="com.zhiliaoapp.musically" />
+        <package android:name="com.ss.android.ugc.trill" />
+        <package android:name="com.facebook.katana" />
+        <package android:name="com.twitter.android" />
+        <package android:name="com.snapchat.android" />
+        <package android:name="com.pinterest" />
+        <package android:name="org.telegram.messenger" />
+        <package android:name="com.google.android.googlequicksearchbox" />
     </queries>
 
     <application

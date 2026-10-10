@@ -37,7 +37,17 @@ object BundleRepository {
         IconItem(R.drawable.ic_mv_reminders, "Reminders"),
         IconItem(R.drawable.ic_mv_health, "Health"),
         IconItem(R.drawable.ic_mv_wallet, "Wallet"),
-        IconItem(R.drawable.ic_mv_favorites, "Favorites")
+        IconItem(R.drawable.ic_mv_favorites, "Favorites"),
+        IconItem(R.drawable.ic_mv_whatsapp, "WhatsApp"),
+        IconItem(R.drawable.ic_mv_whatsapp_business, "WhatsApp Business"),
+        IconItem(R.drawable.ic_mv_instagram, "Instagram"),
+        IconItem(R.drawable.ic_mv_tiktok, "TikTok"),
+        IconItem(R.drawable.ic_mv_facebook, "Facebook"),
+        IconItem(R.drawable.ic_mv_x, "X"),
+        IconItem(R.drawable.ic_mv_snapchat, "Snapchat"),
+        IconItem(R.drawable.ic_mv_pinterest, "Pinterest"),
+        IconItem(R.drawable.ic_mv_telegram, "Telegram"),
+        IconItem(R.drawable.ic_mv_google, "Google")
     )
 
     private val cgWallpapers = listOf(
@@ -72,7 +82,17 @@ object BundleRepository {
         IconItem(R.drawable.ic_cg_reminders, "Reminders"),
         IconItem(R.drawable.ic_cg_health, "Health"),
         IconItem(R.drawable.ic_cg_wallet, "Wallet"),
-        IconItem(R.drawable.ic_cg_favorites, "Favorites")
+        IconItem(R.drawable.ic_cg_favorites, "Favorites"),
+        IconItem(R.drawable.ic_cg_whatsapp, "WhatsApp"),
+        IconItem(R.drawable.ic_cg_whatsapp_business, "WhatsApp Business"),
+        IconItem(R.drawable.ic_cg_instagram, "Instagram"),
+        IconItem(R.drawable.ic_cg_tiktok, "TikTok"),
+        IconItem(R.drawable.ic_cg_facebook, "Facebook"),
+        IconItem(R.drawable.ic_cg_x, "X"),
+        IconItem(R.drawable.ic_cg_snapchat, "Snapchat"),
+        IconItem(R.drawable.ic_cg_pinterest, "Pinterest"),
+        IconItem(R.drawable.ic_cg_telegram, "Telegram"),
+        IconItem(R.drawable.ic_cg_google, "Google")
     )
 
     private val ndWallpapers = listOf(
@@ -107,7 +127,17 @@ object BundleRepository {
         IconItem(R.drawable.ic_nd_reminders, "Reminders"),
         IconItem(R.drawable.ic_nd_health, "Health"),
         IconItem(R.drawable.ic_nd_wallet, "Wallet"),
-        IconItem(R.drawable.ic_nd_favorites, "Favorites")
+        IconItem(R.drawable.ic_nd_favorites, "Favorites"),
+        IconItem(R.drawable.ic_nd_whatsapp, "WhatsApp"),
+        IconItem(R.drawable.ic_nd_whatsapp_business, "WhatsApp Business"),
+        IconItem(R.drawable.ic_nd_instagram, "Instagram"),
+        IconItem(R.drawable.ic_nd_tiktok, "TikTok"),
+        IconItem(R.drawable.ic_nd_facebook, "Facebook"),
+        IconItem(R.drawable.ic_nd_x, "X"),
+        IconItem(R.drawable.ic_nd_snapchat, "Snapchat"),
+        IconItem(R.drawable.ic_nd_pinterest, "Pinterest"),
+        IconItem(R.drawable.ic_nd_telegram, "Telegram"),
+        IconItem(R.drawable.ic_nd_google, "Google")
     )
 
     val bundles: List<RizBundle> = listOf(
