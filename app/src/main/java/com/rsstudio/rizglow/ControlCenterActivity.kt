@@ -40,6 +40,7 @@ class ControlCenterActivity : Activity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        ControlCenterGate.panelOpen = true
         audio = getSystemService(Context.AUDIO_SERVICE) as AudioManager
 
         val root = LinearLayout(this).apply {
@@ -85,10 +86,16 @@ class ControlCenterActivity : Activity() {
     override fun onResume() {
         super.onResume()
         refreshTiles()
-        refreshBubbleBtn()
+        refreshSetupBtns()
+    }
+
+    override fun onDestroy() {
+        ControlCenterGate.panelOpen = false
+        super.onDestroy()
     }
 
     private var bubbleBtn: TextView? = null
+    private var swipeBtn: TextView? = null
 
     private fun setupRow(): LinearLayout {
         val row = LinearLayout(this).apply {
@@ -102,31 +109,63 @@ class ControlCenterActivity : Activity() {
                 textSize = 12f
                 setTypeface(typeface, android.graphics.Typeface.BOLD)
                 setTextColor(0xFFFFFFFF.toInt())
-                setPadding(dp(14), dp(8), dp(14), dp(8))
+                setPadding(dp(12), dp(8), dp(12), dp(8))
+                gravity = Gravity.CENTER
                 background = android.graphics.drawable.GradientDrawable().apply {
                     shape = android.graphics.drawable.GradientDrawable.RECTANGLE
                     cornerRadius = dp(20).toFloat()
                     setColor(0x55FFFFFF.toInt())
                 }
-                layoutParams = LinearLayout.LayoutParams(
-                    LinearLayout.LayoutParams.WRAP_CONTENT,
-                    LinearLayout.LayoutParams.WRAP_CONTENT
-                ).apply { marginEnd = dp(8) }
+                layoutParams = LinearLayout.LayoutParams(0,
+                    LinearLayout.LayoutParams.WRAP_CONTENT, 1f).apply { marginEnd = dp(6) }
                 isClickable = true
                 setOnClickListener { onClick() }
             }
         }
-        row.addView(pill("+ Quick Settings tile") { addTilePrompt() })
+        row.addView(pill("Tile") { addTilePrompt() })
         val bb = pill("") { toggleBubble() }
         bubbleBtn = bb
         row.addView(bb)
-        refreshBubbleBtn()
+        val sw = pill("") { toggleSwipe() }
+        swipeBtn = sw
+        (sw.layoutParams as LinearLayout.LayoutParams).marginEnd = 0
+        row.addView(sw)
+        refreshSetupBtns()
         return row
     }
 
-    private fun refreshBubbleBtn() {
-        bubbleBtn?.text = if (BubbleService.isRunning(this)) "Bubble: ON" else "Bubble: OFF"
+    private fun refreshSetupBtns() {
+        bubbleBtn?.text = if (BubbleService.isRunning(this)) "Bubble on" else "Bubble off"
+        val on = ControlCenterAccessService.isEnabled(this) &&
+            ControlCenterAccessService.isSwipeOpen(this)
+        swipeBtn?.text = if (on) "Swipe on" else "Swipe off"
     }
+
+    private fun toggleSwipe() {
+        if (!ControlCenterAccessService.isEnabled(this)) {
+            android.app.AlertDialog.Builder(this)
+                .setTitle("Swipe to open")
+                .setMessage("To open the control center with a swipe down on the status bar, " +
+                    "Rizglow uses an Accessibility Service. It only watches for that swipe " +
+                    "gesture \u2014 it does not read your screen or collect any data.")
+                .setPositiveButton("Allow") { _, _ ->
+                    ControlCenterAccessService.setSwipeOpen(this, true)
+                    startActivity(Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS))
+                    Toast.makeText(this, "Turn on \"Rizglow Panel\", then come back",
+                        Toast.LENGTH_LONG).show()
+                }
+                .setNegativeButton("Not now", null)
+                .show()
+            return
+        }
+        val cur = ControlCenterAccessService.isSwipeOpen(this)
+        ControlCenterAccessService.setSwipeOpen(this, !cur)
+        Toast.makeText(this,
+            if (!cur) "Swipe down on the status bar to open the panel"
+            else "Swipe-to-open off", Toast.LENGTH_SHORT).show()
+        refreshSetupBtns()
+    }
+
 
     private fun toggleBubble() {
         if (BubbleService.isRunning(this)) {
@@ -304,7 +343,14 @@ class ControlCenterActivity : Activity() {
         }
         row.addView(tile("rotate", "Rotate") { toggleRotate() })
         row.addView(tile("silent", "Silent") { toggleSilent() })
-        val last = tile("dnd", "Focus") { toggleDnd() }
+        row.addView(tile("dnd", "Focus") { toggleDnd() })
+        val last = tile("alerts", "Alerts") {
+            if (!ControlCenterAccessService.openNotifications()) {
+                Toast.makeText(this, "Turn \"Swipe\" on first", Toast.LENGTH_SHORT).show()
+            } else {
+                finish()
+            }
+        }
         (last.layoutParams as LinearLayout.LayoutParams).marginEnd = 0
         row.addView(last)
         return row
@@ -471,5 +517,6 @@ class ControlCenterActivity : Activity() {
         statusViews["camera"]?.text = ""
         statusViews["calc"]?.text = ""
         statusViews["settings"]?.text = ""
+        statusViews["alerts"]?.text = ""
     }
 }

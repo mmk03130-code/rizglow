@@ -12,4 +12,5 @@
     <string name="widget_battery_desc">Aesthetic battery widget in your bundle style.</string>
     <string name="widget_date_label">Rizglow Date</string>
     <string name="widget_date_desc">Aesthetic date widget in your bundle style.</string>
+    <string name="accessibility_desc">Lets Rizglow open its control center when you swipe down on the status bar. It only watches for that swipe gesture.</string>
 </resources>
