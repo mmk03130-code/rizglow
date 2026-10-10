@@ -3,6 +3,7 @@ package com.rsstudio.rizglow
 import android.app.Activity
 import android.app.AlertDialog
 import android.appwidget.AppWidgetManager
+import android.app.PendingIntent
 import android.content.ComponentName
 import android.content.Intent
 import android.content.pm.ShortcutInfo
@@ -334,7 +335,9 @@ class MainActivity : Activity() {
         IconTargets.resolve(this, label)
 
     /** Pin a 1x1 widget that looks like an icon — widgets never get the
-     *  system shortcut watermark badge (the Themezy trick). */
+     *  system shortcut watermark badge (the Themezy trick).
+     *  The system calls us back with the new widget ID; we assign the picked
+     *  icon then. FLAG_MUTABLE lets the system attach EXTRA_APPWIDGET_ID. */
     private fun requestPinIconWidget(bundleId: String, icon: IconItem) {
         val awm = getSystemService(AppWidgetManager::class.java)
         if (awm == null || !awm.isRequestPinAppWidgetSupported) {
@@ -342,11 +345,17 @@ class MainActivity : Activity() {
             return
         }
         val provider = ComponentName(this, IconWidgetProvider::class.java)
-        val extras = Bundle().apply {
-            putString("bundleId", bundleId)
-            putString("label", icon.label)
+        val callbackIntent = Intent(this, WidgetPinReceiver::class.java).apply {
+            putExtra("bundleId", bundleId)
+            putExtra("label", icon.label)
         }
-        awm.requestPinAppWidget(provider, extras, null)
+        val callback = PendingIntent.getBroadcast(
+            this,
+            (System.currentTimeMillis() % Int.MAX_VALUE).toInt(),
+            callbackIntent,
+            PendingIntent.FLAG_MUTABLE
+        )
+        awm.requestPinAppWidget(provider, null, callback)
     }
 
     private fun createThemedShortcut(icon: IconItem) {

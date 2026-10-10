@@ -6,7 +6,6 @@
     android:targetCellHeight="1"
     android:updatePeriodMillis="0"
     android:initialLayout="@layout/widget_icon"
-    android:configure="com.rsstudio.rizglow.IconWidgetConfigActivity"
     android:description="@string/widget_desc"
     android:previewImage="@drawable/ic_launcher"
     android:widgetCategory="home_screen" />

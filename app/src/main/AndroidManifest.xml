@@ -146,6 +146,10 @@
         <activity android:name=".AboutActivity" android:exported="false" />
 
         <receiver
+            android:name=".WidgetPinReceiver"
+            android:exported="false" />
+
+        <receiver
             android:name=".IconWidgetProvider"
             android:exported="false"
             android:label="@string/widget_label">
@@ -157,9 +161,6 @@
                 android:resource="@xml/widget_icon_info" />
         </receiver>
 
-        <activity
-            android:name=".IconWidgetConfigActivity"
-            android:exported="true" />
 
     </application>
 </manifest>
