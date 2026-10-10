@@ -33,7 +33,7 @@ class SwipeSetupActivity : Activity() {
             setTextColor(getColor(R.color.text))
         })
         root.addView(TextView(this).apply {
-            text = "Open the fuzzy panel with a swipe down from the top-right corner, just like the big theme apps."
+            text = "Open the fuzzy panel with a swipe down starting just below the status bar in the top-right corner, just like the big theme apps."
             textSize = 14f
             setTextColor(getColor(R.color.muted))
             setPadding(0, dp(6), 0, dp(14))
@@ -77,7 +77,7 @@ class SwipeSetupActivity : Activity() {
         step("STEP 2", "Turn on the service",
             "In Accessibility → Downloaded apps, open \"Rizglow Panel\" and turn it ON. Accept the system prompt.")
         step("STEP 3", "Test the swipe",
-            "Come back and swipe down from the top-right corner of your screen. The fuzzy panel should float in.")
+            "Come back, place your finger just below the status bar in the top-right corner, then swipe down. The fuzzy panel should float in.")
         steps.addView(list)
         root.addView(steps)
 
@@ -164,7 +164,7 @@ class SwipeSetupActivity : Activity() {
             setOnClickListener {
                 if (ControlCenterAccessService.flashStrip()) {
                     Toast.makeText(this@SwipeSetupActivity,
-                        "Red bar = strip alive. Now TAP the red bar!",
+                        "Red bar just under the status bar = strip alive. Now TAP the red bar!",
                         Toast.LENGTH_LONG).show()
                 } else {
                     Toast.makeText(this@SwipeSetupActivity,

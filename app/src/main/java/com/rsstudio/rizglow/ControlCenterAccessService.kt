@@ -49,7 +49,15 @@ class ControlCenterAccessService : AccessibilityService() {
 
     private fun addStrip() {
         if (strip != null) return
-        val h = statusBarHeight() + dp(8)
+        // CRITICAL: the system status bar always draws ABOVE accessibility
+        // overlays and eats every touch inside its own region. A strip that
+        // overlaps the status bar is visible (the bar is translucent) but
+        // untouchable — swipes starting on it go straight to the system, which
+        // is why the gesture kept opening the native panel instead of ours.
+        // So the strip lives fully BELOW the status bar, in app-content
+        // territory, where no system window can claim its touches. The gesture
+        // is: finger down just under the status bar (top-right), swipe down.
+        val h = dp(40)
         // iOS-style corner swipe (like Themezy): 40% width at top-right, so a
         // normal swipe-down elsewhere still opens notifications.
         val w = (resources.displayMetrics.widthPixels * 0.4).toInt()
@@ -59,7 +67,10 @@ class ControlCenterAccessService : AccessibilityService() {
             WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE or
                 WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN,
             PixelFormat.TRANSLUCENT
-        ).apply { gravity = Gravity.TOP or Gravity.END }
+        ).apply {
+            gravity = Gravity.TOP or Gravity.END
+            y = statusBarHeight() // sit just under the status bar
+        }
         val v = FrameLayout(this)
         var downY = 0f
         var downX = 0f
@@ -67,8 +78,10 @@ class ControlCenterAccessService : AccessibilityService() {
         v.setOnTouchListener { _, e ->
             when (e.action) {
                 // Must claim ACTION_DOWN or the system never delivers MOVE: the
-                // swipe would be invisible to us. Taps in the corner strip are
-                // harmlessly absorbed (nothing tappable lives there).
+                // swipe would be invisible to us. Note the strip now sits just
+                // below the status bar, so while Swipe is ON this corner zone
+                // absorbs taps too (swipe pill is opt-in, so this is the
+                // user's trade, not a surprise).
                 MotionEvent.ACTION_DOWN -> {
                     if (testMode) {
                         android.widget.Toast.makeText(this@ControlCenterAccessService,
