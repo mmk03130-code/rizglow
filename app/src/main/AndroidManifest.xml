@@ -124,7 +124,24 @@
         </activity>
 
         <activity android:name=".OnboardingActivity" android:exported="false" />
-        <activity android:name=".MainActivity" android:exported="false" />
+        <activity
+            android:name=".MainActivity"
+            android:exported="true">
+            <!-- Icon pack discovery: lets custom launchers (Nova, Lawnchair, etc.)
+                 list Rizglow as an icon pack and apply Midnight Velvet badge-free -->
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="com.anddoes.launcher.THEME" />
+            </intent-filter>
+            <intent-filter>
+                <action android:name="org.adw.launcher.THEMES" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+            <intent-filter>
+                <action android:name="com.gau.go.launcherex.theme" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
         <activity android:name=".WallpaperPreviewActivity" android:exported="false" />
         <activity android:name=".AboutActivity" android:exported="false" />
 

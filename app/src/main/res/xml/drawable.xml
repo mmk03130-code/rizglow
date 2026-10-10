@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <category title="Midnight Velvet" />
+    <item drawable="ic_mv_phone" />
+    <item drawable="ic_mv_messages" />
+    <item drawable="ic_mv_camera" />
+    <item drawable="ic_mv_photos" />
+    <item drawable="ic_mv_clock" />
+    <item drawable="ic_mv_settings" />
+    <item drawable="ic_mv_music" />
+    <item drawable="ic_mv_browser" />
+    <item drawable="ic_mv_maps" />
+    <item drawable="ic_mv_mail" />
+    <item drawable="ic_mv_calendar" />
+    <item drawable="ic_mv_contacts" />
+    <item drawable="ic_mv_calculator" />
+    <item drawable="ic_mv_files" />
+    <item drawable="ic_mv_video" />
+    <item drawable="ic_mv_games" />
+    <item drawable="ic_mv_recorder" />
+    <item drawable="ic_mv_weather" />
+    <item drawable="ic_mv_notes" />
+    <item drawable="ic_mv_reminders" />
+    <item drawable="ic_mv_health" />
+    <item drawable="ic_mv_wallet" />
+    <item drawable="ic_mv_whatsapp" />
+    <item drawable="ic_mv_whatsapp_business" />
+    <item drawable="ic_mv_instagram" />
+    <item drawable="ic_mv_tiktok" />
+    <item drawable="ic_mv_facebook" />
+    <item drawable="ic_mv_x" />
+    <item drawable="ic_mv_snapchat" />
+    <item drawable="ic_mv_pinterest" />
+    <item drawable="ic_mv_telegram" />
+    <item drawable="ic_mv_google" />
+</resources>

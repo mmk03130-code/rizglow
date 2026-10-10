@@ -138,7 +138,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="4dp"
                     android:layout_marginBottom="16dp"
-                    android:text="Matching icon sets for every bundle."
+                    android:text="Matching icon sets for every bundle.\nTip: use a custom launcher (Nova, Lawnchair) and apply Rizglow as an icon pack for badge-free Midnight Velvet icons."
                     android:textSize="14sp"
                     android:textColor="@color/muted" />
 
