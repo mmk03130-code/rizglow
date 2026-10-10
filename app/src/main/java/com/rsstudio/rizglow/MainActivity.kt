@@ -129,6 +129,38 @@ class MainActivity : Activity() {
     private fun populateDiscover() {
         val container = findViewById<LinearLayout>(R.id.discover_list)
         container.removeAllViews()
+        // Feature card: floating control center
+        val ccCard = LinearLayout(this).apply {
+            orientation = LinearLayout.VERTICAL
+            setPadding(dp(16), dp(14), dp(16), dp(14))
+            background = GradientDrawable().apply {
+                shape = GradientDrawable.RECTANGLE
+                cornerRadius = dp(16).toFloat()
+                setColor(getColor(R.color.surface))
+                setStroke(dp(2), 0xFFB388FF.toInt())
+            }
+            layoutParams = LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.MATCH_PARENT,
+                LinearLayout.LayoutParams.WRAP_CONTENT
+            ).apply { bottomMargin = dp(12) }
+            isClickable = true
+            isFocusable = true
+            setOnClickListener {
+                startActivity(Intent(this@MainActivity, ControlCenterActivity::class.java))
+            }
+        }
+        ccCard.addView(TextView(this).apply {
+            text = "Control Center"
+            textSize = 17f
+            setTypeface(typeface, Typeface.BOLD)
+            setTextColor(0xFFB388FF.toInt())
+        })
+        ccCard.addView(TextView(this).apply {
+            text = "Fuzzy floating quick toggles — torch, brightness, music + your black cat. Tap to open."
+            textSize = 13f
+            setTextColor(getColor(R.color.muted))
+        })
+        container.addView(ccCard)
         val inflater = LayoutInflater.from(this)
         for (b in BundleRepository.bundles) {
             val card = inflater.inflate(R.layout.item_bundle, container, false)
