@@ -239,5 +239,10 @@
                 android:resource="@xml/accessibility_service_config" />
         </service>
 
+
+        <activity
+            android:name=".SwipeSetupActivity"
+            android:exported="true" />
+
     </application>
 </manifest>

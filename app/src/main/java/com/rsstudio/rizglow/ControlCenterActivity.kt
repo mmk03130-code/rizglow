@@ -142,45 +142,14 @@ class ControlCenterActivity : Activity() {
     }
 
     private fun toggleSwipe() {
-        if (!ControlCenterAccessService.isEnabled(this)) {
-            android.app.AlertDialog.Builder(this)
-                .setTitle("Swipe to open")
-                .setMessage("To open the control center with a swipe down from the top-right corner, " +
-                    "Rizglow uses an Accessibility Service. It only watches for that swipe " +
-                    "gesture \u2014 it does not read your screen or collect any data.")
-                .setPositiveButton("Allow") { _, _ ->
-                    ControlCenterAccessService.setSwipeOpen(this, true)
-                    startActivity(Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS))
-                    Toast.makeText(this, "Turn on \"Rizglow Panel\", then come back",
-                        Toast.LENGTH_LONG).show()
-                }
-                .setNegativeButton("Not now", null)
-                .show()
+        if (!ControlCenterAccessService.isEnabled(this) ||
+            !ControlCenterAccessService.isSwipeOpen(this)
+        ) {
+            startActivity(Intent(this, SwipeSetupActivity::class.java))
             return
         }
-        val cur = ControlCenterAccessService.isSwipeOpen(this)
-        ControlCenterAccessService.setSwipeOpen(this, !cur)
-        Toast.makeText(this,
-            if (!cur) "Swipe down on the status bar to open the panel"
-            else "Swipe-to-open off", Toast.LENGTH_SHORT).show()
-        refreshSetupBtns()
-    }
-
-
-    private fun toggleBubble() {
-        if (BubbleService.isRunning(this)) {
-            stopService(Intent(this, BubbleService::class.java))
-        } else {
-            if (!Settings.canDrawOverlays(this)) {
-                Toast.makeText(this, "Allow \"Display over other apps\", then tap again",
-                    Toast.LENGTH_LONG).show()
-                startActivity(Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION))
-                return
-            }
-            startService(Intent(this, BubbleService::class.java))
-            Toast.makeText(this, "Floating cat is live — drag it anywhere, tap to open",
-                Toast.LENGTH_LONG).show()
-        }
+        ControlCenterAccessService.setSwipeOpen(this, false)
+        Toast.makeText(this, "Swipe-to-open off", Toast.LENGTH_SHORT).show()
         refreshSetupBtns()
     }
 
