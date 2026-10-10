@@ -69,10 +69,16 @@ class ControlCenterAccessService : AccessibilityService() {
                 // swipe would be invisible to us. Taps in the corner strip are
                 // harmlessly absorbed (nothing tappable lives there).
                 MotionEvent.ACTION_DOWN -> {
-                    downY = e.rawY
-                    downX = e.rawX
-                    tracking = true
-                    true
+                    // Unarmed: stay completely out of the way (native UX untouched).
+                    if (!isSwipeOpen(this@ControlCenterAccessService)) {
+                        tracking = false
+                        false
+                    } else {
+                        downY = e.rawY
+                        downX = e.rawX
+                        tracking = true
+                        true
+                    }
                 }
                 MotionEvent.ACTION_MOVE -> {
                     if (tracking && isSwipeOpen(this) && !ControlCenterGate.panelOpen) {
@@ -96,6 +102,14 @@ class ControlCenterAccessService : AccessibilityService() {
         }
     }
 
+    /** Test hook: flash the strip red so the user can SEE it. */
+    private fun flashStrip(): Boolean {
+        val v = strip ?: return false
+        v.setBackgroundColor(0x66FF0000)
+        v.postDelayed({ v.setBackgroundColor(0x00000000) }, 3000)
+        return true
+    }
+
     private fun openPanel() {
         startActivity(
             Intent(this, ControlCenterActivity::class.java)
@@ -117,6 +131,13 @@ class ControlCenterAccessService : AccessibilityService() {
 
         fun openNotifications(): Boolean =
             instance?.performGlobalAction(GLOBAL_ACTION_NOTIFICATIONS) == true
+
+        /** True when the system has actually bound+connected the service. */
+        fun isServiceConnected(): Boolean = instance != null
+
+        fun isStripAttached(): Boolean = instance?.strip != null
+
+        fun flashStrip(): Boolean = instance?.flashStrip() == true
 
         fun isEnabled(ctx: Context): Boolean {
             val expected = ComponentName(ctx, ControlCenterAccessService::class.java).flattenToString()

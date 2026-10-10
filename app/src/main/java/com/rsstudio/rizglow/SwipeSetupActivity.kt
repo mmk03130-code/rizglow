@@ -89,6 +89,7 @@ class SwipeSetupActivity : Activity() {
             gravity = Gravity.CENTER
         })
 
+        addTestBtn(root)
         val goBtn = TextView(this).apply {
             text = "Go to Settings →"
             textSize = 16f
@@ -122,25 +123,59 @@ class SwipeSetupActivity : Activity() {
 
     override fun onResume() {
         super.onResume()
-        val on = ControlCenterAccessService.isEnabled(this)
-        if (on) {
-            ControlCenterAccessService.setSwipeOpen(this, true)
-            statusView.text = "● Service is ON — swipe from the top-right corner!"
-            statusView.setTextColor(0xFF7BC98A.toInt())
-            statusView.background = android.graphics.drawable.GradientDrawable().apply {
-                shape = android.graphics.drawable.GradientDrawable.RECTANGLE
-                cornerRadius = dp(12).toFloat()
-                setColor(0x227BC98A.toInt())
-            }
-        } else {
-            statusView.text = "○ Service is OFF — follow the steps below"
-            statusView.setTextColor(0xFFE0A05A.toInt())
-            statusView.background = android.graphics.drawable.GradientDrawable().apply {
-                shape = android.graphics.drawable.GradientDrawable.RECTANGLE
-                cornerRadius = dp(12).toFloat()
-                setColor(0x22E0A05A.toInt())
-            }
-            Toast.makeText(this, "Service still off — complete steps 1–2", Toast.LENGTH_SHORT).show()
+        val sysOn = ControlCenterAccessService.isEnabled(this)
+        val connected = ControlCenterAccessService.isServiceConnected()
+        val strip = ControlCenterAccessService.isStripAttached()
+        val ver = try {
+            packageManager.getPackageInfo(packageName, 0).versionName
+        } catch (e: Exception) { "?" }
+        if (sysOn) ControlCenterAccessService.setSwipeOpen(this, true)
+        val armed = ControlCenterAccessService.isSwipeOpen(this)
+        statusView.text = "App v$ver\n" +
+            (if (sysOn) "● System toggle: ON" else "○ System toggle: OFF") + "\n" +
+            (if (connected) "● Service connected: YES" else "○ Service connected: NO") + "\n" +
+            (if (strip) "● Swipe strip: attached" else "○ Swipe strip: MISSING") + "\n" +
+            (if (armed) "● Trigger armed: YES" else "○ Trigger armed: NO")
+        val ok = sysOn && connected && strip && armed
+        statusView.setTextColor(if (ok) 0xFF7BC98A.toInt() else 0xFFE0A05A.toInt())
+        statusView.background = android.graphics.drawable.GradientDrawable().apply {
+            shape = android.graphics.drawable.GradientDrawable.RECTANGLE
+            cornerRadius = dp(12).toFloat()
+            setColor((if (ok) 0x227BC98A else 0x22E0A05A).toInt())
         }
+        if (!ok) Toast.makeText(this, "Something's off — see details above", Toast.LENGTH_SHORT).show()
+    }
+
+    /** Test button wiring is done in onCreate via addTestBtn(); kept simple. */
+    private fun addTestBtn(parent: LinearLayout) {
+        val t = TextView(this).apply {
+            text = "Flash test strip"
+            textSize = 15f
+            setTypeface(typeface, Typeface.BOLD)
+            setTextColor(0xFFFFFFFF.toInt())
+            gravity = Gravity.CENTER
+            setPadding(dp(16), dp(12), dp(16), dp(12))
+            background = android.graphics.drawable.GradientDrawable().apply {
+                shape = android.graphics.drawable.GradientDrawable.RECTANGLE
+                cornerRadius = dp(20).toFloat()
+                setColor(0xFF6D6D8A.toInt())
+            }
+            isClickable = true
+            setOnClickListener {
+                if (ControlCenterAccessService.flashStrip()) {
+                    Toast.makeText(this@SwipeSetupActivity,
+                        "Look at the top-right corner — red flash = strip is alive",
+                        Toast.LENGTH_LONG).show()
+                } else {
+                    Toast.makeText(this@SwipeSetupActivity,
+                        "Strip not attached — service isn't really running",
+                        Toast.LENGTH_LONG).show()
+                }
+            }
+        }
+        val lp = LinearLayout.LayoutParams(
+            LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT)
+        lp.topMargin = dp(8)
+        parent.addView(t, lp)
     }
 }
