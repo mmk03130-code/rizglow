@@ -31,7 +31,18 @@ class IconWidgetProvider : AppWidgetProvider() {
     }
 
     override fun onUpdate(context: Context, mgr: AppWidgetManager, ids: IntArray) {
-        for (id in ids) updateWidget(context, mgr, id)
+        for (id in ids) {
+            // Self-heal: on launchers where the pin callback/extras never arrive
+            // (e.g. vivo), an unmapped widget claims the oldest pending pin.
+            if (!hasMapping(context, id)) {
+                val pending = claimPending(context)
+                if (pending != null) {
+                    context.getSharedPreferences(PREFS, Context.MODE_PRIVATE).edit()
+                        .putString(key(id), "${pending.first}|${pending.second}|0").apply()
+                }
+            }
+            updateWidget(context, mgr, id)
+        }
     }
 
     override fun onDeleted(context: Context, ids: IntArray) {
@@ -41,7 +52,40 @@ class IconWidgetProvider : AppWidgetProvider() {
 
     companion object {
         const val PREFS = "rizglow_icon_widgets"
+        private const val PENDING_KEY = "pending_pins"
+        private const val PENDING_TTL_MS = 5 * 60 * 1000L
         fun key(id: Int) = "widget_$id"
+
+        fun hasMapping(context: Context, appWidgetId: Int): Boolean =
+            context.getSharedPreferences(PREFS, Context.MODE_PRIVATE)
+                .getString(key(appWidgetId), null) != null
+
+        /** Stash a pin request before pinning; a widget that wakes up unmapped
+         *  claims the oldest entry. Entries expire after 5 minutes. */
+        fun addPending(context: Context, bundleId: String, label: String) {
+            val prefs = context.getSharedPreferences(PREFS, Context.MODE_PRIVATE)
+            val q = prefs.getString(PENDING_KEY, "") ?: ""
+            val entry = "$bundleId|$label|${System.currentTimeMillis()}"
+            prefs.edit()
+                .putString(PENDING_KEY, if (q.isEmpty()) entry else "$q;$entry")
+                .apply()
+        }
+
+        fun claimPending(context: Context): Pair<String, String>? {
+            val prefs = context.getSharedPreferences(PREFS, Context.MODE_PRIVATE)
+            val now = System.currentTimeMillis()
+            val entries = (prefs.getString(PENDING_KEY, "") ?: "")
+                .split(";").filter { it.isNotEmpty() }.toMutableList()
+            while (entries.isNotEmpty()) {
+                val parts = entries.removeAt(0).split("|")
+                prefs.edit().putString(PENDING_KEY, entries.joinToString(";")).apply()
+                if (parts.size == 3) {
+                    val age = now - (parts[2].toLongOrNull() ?: 0L)
+                    if (age in 0..PENDING_TTL_MS) return parts[0] to parts[1]
+                }
+            }
+            return null
+        }
 
         /** (bundleId, label, iconResId) stored for this widget, or null. */
         fun load(context: Context, appWidgetId: Int): Triple<String, String, Int>? {

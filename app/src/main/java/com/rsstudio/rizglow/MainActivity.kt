@@ -355,6 +355,9 @@ class MainActivity : Activity() {
             callbackIntent,
             PendingIntent.FLAG_MUTABLE
         )
+        // Stash the pick first: if the pin callback never arrives (vivo etc.),
+        // the widget claims this pending pin when it wakes up unmapped.
+        IconWidgetProvider.addPending(this, bundleId, icon.label)
         awm.requestPinAppWidget(provider, null, callback)
     }
 
