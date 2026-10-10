@@ -153,6 +153,24 @@ class ControlCenterActivity : Activity() {
         refreshSetupBtns()
     }
 
+    private fun toggleBubble() {
+        if (BubbleService.isRunning(this)) {
+            stopService(Intent(this, BubbleService::class.java))
+        } else {
+            if (!Settings.canDrawOverlays(this)) {
+                Toast.makeText(this, "Allow \"Display over other apps\", then tap again",
+                    Toast.LENGTH_LONG).show()
+                startActivity(Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION))
+                return
+            }
+            startService(Intent(this, BubbleService::class.java))
+            Toast.makeText(this, "Floating cat is live — drag it anywhere, tap to open",
+                Toast.LENGTH_LONG).show()
+        }
+        refreshSetupBtns()
+    }
+
+
     private fun addTilePrompt() {
         if (Build.VERSION.SDK_INT >= 33) {
             val sbm = getSystemService(StatusBarManager::class.java)
