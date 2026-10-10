@@ -6,6 +6,7 @@ import android.content.Intent
 import android.content.pm.ShortcutInfo
 import android.content.pm.ShortcutManager
 import android.graphics.drawable.GradientDrawable
+import android.graphics.BitmapFactory
 import android.graphics.drawable.Icon
 import android.net.Uri
 import android.os.Bundle
@@ -322,23 +323,46 @@ class MainActivity : Activity() {
             .show()
     }
 
-    /** Resolve the real app behind an icon label on this device. */
+    /** Resolve the real app behind an icon label on this device.
+     *  Tries implicit probes first (explicit intent to whatever resolves),
+     *  then falls back to well-known package names per OEM. */
     private fun resolveTargetIntent(label: String): Intent? {
         val pm = packageManager
-        val probe: Intent = when (label) {
-            "Phone" -> Intent(Intent.ACTION_DIAL)
-            "Messages" -> Intent(Intent.ACTION_MAIN).addCategory("android.intent.category.APP_MESSAGING")
-            "Camera" -> Intent(MediaStore.ACTION_IMAGE_CAPTURE)
-            "Photos" -> Intent(Intent.ACTION_MAIN).addCategory("android.intent.category.APP_GALLERY")
-            "Clock" -> Intent(AlarmClock.ACTION_SHOW_ALARMS)
-            "Settings" -> Intent(Settings.ACTION_SETTINGS)
-            "Music" -> Intent(Intent.ACTION_MAIN).addCategory("android.intent.category.APP_MUSIC")
-            "Browser" -> Intent(Intent.ACTION_VIEW, Uri.parse("https://www.google.com"))
-            else -> return null
+        val probes: List<Intent> = when (label) {
+            "Phone" -> listOf(Intent(Intent.ACTION_DIAL, Uri.parse("tel:")))
+            "Messages" -> listOf(Intent(Intent.ACTION_MAIN).addCategory("android.intent.category.APP_MESSAGING"))
+            "Camera" -> listOf(Intent(MediaStore.ACTION_IMAGE_CAPTURE))
+            "Photos" -> listOf(Intent(Intent.ACTION_MAIN).addCategory("android.intent.category.APP_GALLERY"))
+            "Clock" -> listOf(Intent(AlarmClock.ACTION_SHOW_ALARMS))
+            "Settings" -> listOf(Intent(Settings.ACTION_SETTINGS))
+            "Music" -> listOf(Intent(Intent.ACTION_MAIN).addCategory("android.intent.category.APP_MUSIC"))
+            "Browser" -> listOf(Intent(Intent.ACTION_VIEW, Uri.parse("https://www.google.com")))
+            else -> emptyList()
         }
-        val pkg = pm.resolveActivity(probe, 0)?.activityInfo?.packageName ?: return null
-        return pm.getLaunchIntentForPackage(pkg)?.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-            ?: probe.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+        for (probe in probes) {
+            val ai = pm.resolveActivity(probe, 0)?.activityInfo
+            if (ai != null) {
+                return Intent(Intent.ACTION_MAIN)
+                    .setClassName(ai.packageName, ai.name)
+                    .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+            }
+        }
+        val fallbackPkgs: List<String> = when (label) {
+            "Phone" -> listOf("com.google.android.dialer", "com.android.dialer", "com.samsung.android.dialer")
+            "Messages" -> listOf("com.google.android.apps.messaging", "com.android.mms", "com.samsung.android.messaging")
+            "Camera" -> listOf("com.android.camera2", "com.sec.android.app.camera", "com.android.camera")
+            "Photos" -> listOf("com.google.android.apps.photos", "com.sec.android.gallery3d", "com.miui.gallery", "com.android.gallery3d")
+            "Clock" -> listOf("com.google.android.deskclock", "com.android.deskclock", "com.samsung.android.clock")
+            "Settings" -> listOf("com.android.settings")
+            "Music" -> listOf("com.google.android.apps.youtube.music", "com.spotify.music", "com.android.music")
+            "Browser" -> listOf("com.android.chrome", "com.mi.globalbrowser", "com.sec.android.app.sbrowser", "org.mozilla.firefox")
+            else -> emptyList()
+        }
+        for (pkg in fallbackPkgs) {
+            val li = pm.getLaunchIntentForPackage(pkg)
+            if (li != null) return li.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+        }
+        return null
     }
 
     private fun createThemedShortcut(icon: IconItem) {
@@ -354,11 +378,18 @@ class MainActivity : Activity() {
         }
         val info = ShortcutInfo.Builder(this, "rizglow_${icon.label.lowercase()}")
             .setShortLabel(icon.label)
-            .setIcon(Icon.createWithResource(this, icon.resId))
+            .setIcon(adaptiveIcon(icon.resId))
             .setIntent(target)
             .build()
         sm.requestPinShortcut(info, null)
         Toast.makeText(this, "Confirm on your home screen ✨", Toast.LENGTH_SHORT).show()
+    }
+
+    /** Full-bleed adaptive icon so the launcher masks it cleanly (no white box). */
+    private fun adaptiveIcon(resId: Int): Icon {
+        val bmp = BitmapFactory.decodeResource(resources, resId)
+        return if (bmp != null) Icon.createWithAdaptiveBitmap(bmp)
+        else Icon.createWithResource(this, resId)
     }
 
     private fun showUnlockDialog(b: RizBundle) {
