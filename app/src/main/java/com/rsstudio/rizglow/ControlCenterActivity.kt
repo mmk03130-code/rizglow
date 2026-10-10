@@ -181,7 +181,7 @@ class ControlCenterActivity : Activity() {
             Toast.makeText(this, "Floating cat is live — drag it anywhere, tap to open",
                 Toast.LENGTH_LONG).show()
         }
-        refreshBubbleBtn()
+        refreshSetupBtns()
     }
 
     private fun addTilePrompt() {
