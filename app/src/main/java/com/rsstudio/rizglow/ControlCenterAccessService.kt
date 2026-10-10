@@ -65,11 +65,14 @@ class ControlCenterAccessService : AccessibilityService() {
         var tracking = false
         v.setOnTouchListener { _, e ->
             when (e.action) {
+                // Must claim ACTION_DOWN or the system never delivers MOVE: the
+                // swipe would be invisible to us. Taps in the corner strip are
+                // harmlessly absorbed (nothing tappable lives there).
                 MotionEvent.ACTION_DOWN -> {
                     downY = e.rawY
                     downX = e.rawX
                     tracking = true
-                    false
+                    true
                 }
                 MotionEvent.ACTION_MOVE -> {
                     if (tracking && isSwipeOpen(this) && !ControlCenterGate.panelOpen) {
@@ -78,11 +81,11 @@ class ControlCenterAccessService : AccessibilityService() {
                         if (dy > dp(56) && dy > 2 * abs(dx)) {
                             tracking = false
                             openPanel()
-                            true
-                        } else false
-                    } else false
+                        }
+                    }
+                    true
                 }
-                else -> false
+                else -> true
             }
         }
         strip = v
