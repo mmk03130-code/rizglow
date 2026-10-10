@@ -3,8 +3,15 @@ package com.rsstudio.rizglow
 import android.app.Activity
 import android.app.AlertDialog
 import android.content.Intent
+import android.content.pm.ShortcutInfo
+import android.content.pm.ShortcutManager
 import android.graphics.drawable.GradientDrawable
+import android.graphics.drawable.Icon
+import android.net.Uri
 import android.os.Bundle
+import android.provider.AlarmClock
+import android.provider.MediaStore
+import android.provider.Settings
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
@@ -15,6 +22,7 @@ import android.widget.TextView
 import android.widget.Toast
 import com.rsstudio.rizglow.ads.UnlockManager
 import com.rsstudio.rizglow.model.BundleRepository
+import com.rsstudio.rizglow.model.IconItem
 import com.rsstudio.rizglow.model.RizBundle
 
 /** Main app: Discover (bundles) / Wallpapers (grids) / Icons (sets) / Widgets (soon). */
@@ -203,6 +211,9 @@ class MainActivity : Activity() {
                         }
                         cell.addView(iv)
                         cell.addView(label)
+                        cell.isClickable = true
+                        cell.isFocusable = true
+                        cell.setOnClickListener { showIconDialog(icon) }
                         grid.addView(cell)
                     }
                     container.addView(grid)
@@ -265,6 +276,89 @@ class MainActivity : Activity() {
             Intent(this, WallpaperPreviewActivity::class.java)
                 .putExtra(WallpaperPreviewActivity.EXTRA_RES_ID, resId)
         )
+    }
+
+    private fun showIconDialog(icon: IconItem) {
+        val view = LinearLayout(this).apply {
+            orientation = LinearLayout.VERTICAL
+            gravity = Gravity.CENTER_HORIZONTAL
+            setPadding(dp(24), dp(24), dp(24), dp(8))
+        }
+        val iv = ImageView(this).apply {
+            setImageResource(icon.resId)
+            layoutParams = LinearLayout.LayoutParams(dp(110), dp(110))
+        }
+        val label = TextView(this).apply {
+            text = icon.label
+            textSize = 18f
+            setTypeface(typeface, android.graphics.Typeface.BOLD)
+            setTextColor(getColor(R.color.text))
+            layoutParams = LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.WRAP_CONTENT,
+                LinearLayout.LayoutParams.WRAP_CONTENT
+            ).apply { topMargin = dp(12) }
+        }
+        val note = TextView(this).apply {
+            text = "Add a ${icon.label} shortcut with this icon to your home screen."
+            textSize = 13f
+            setTextColor(getColor(R.color.muted))
+            gravity = Gravity.CENTER
+            layoutParams = LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.WRAP_CONTENT,
+                LinearLayout.LayoutParams.WRAP_CONTENT
+            ).apply { topMargin = dp(6) }
+        }
+        view.addView(iv)
+        view.addView(label)
+        view.addView(note)
+
+        AlertDialog.Builder(this)
+            .setView(view)
+            .setPositiveButton("Add to Home screen") { d, _ ->
+                d.dismiss()
+                createThemedShortcut(icon)
+            }
+            .setNegativeButton("Close", null)
+            .show()
+    }
+
+    /** Resolve the real app behind an icon label on this device. */
+    private fun resolveTargetIntent(label: String): Intent? {
+        val pm = packageManager
+        val probe: Intent = when (label) {
+            "Phone" -> Intent(Intent.ACTION_DIAL)
+            "Messages" -> Intent(Intent.ACTION_MAIN).addCategory("android.intent.category.APP_MESSAGING")
+            "Camera" -> Intent(MediaStore.ACTION_IMAGE_CAPTURE)
+            "Photos" -> Intent(Intent.ACTION_MAIN).addCategory("android.intent.category.APP_GALLERY")
+            "Clock" -> Intent(AlarmClock.ACTION_SHOW_ALARMS)
+            "Settings" -> Intent(Settings.ACTION_SETTINGS)
+            "Music" -> Intent(Intent.ACTION_MAIN).addCategory("android.intent.category.APP_MUSIC")
+            "Browser" -> Intent(Intent.ACTION_VIEW, Uri.parse("https://www.google.com"))
+            else -> return null
+        }
+        val pkg = pm.resolveActivity(probe, 0)?.activityInfo?.packageName ?: return null
+        return pm.getLaunchIntentForPackage(pkg)?.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+            ?: probe.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+    }
+
+    private fun createThemedShortcut(icon: IconItem) {
+        val target = resolveTargetIntent(icon.label)
+        if (target == null) {
+            Toast.makeText(this, "Couldn't find the ${icon.label} app on this phone", Toast.LENGTH_SHORT).show()
+            return
+        }
+        val sm = getSystemService(ShortcutManager::class.java)
+        if (sm == null || !sm.isRequestPinShortcutSupported) {
+            Toast.makeText(this, "This launcher doesn't support pinned shortcuts", Toast.LENGTH_SHORT).show()
+            return
+        }
+        val info = ShortcutInfo.Builder(this, "rizglow_${icon.label.lowercase()}")
+            .setShortLabel(icon.label)
+            .setIcon(Icon.createWithResource(this, icon.resId))
+            .setIntent(target)
+            .build()
+        sm.requestPinShortcut(info, null)
+        Toast.makeText(this, "Confirm on your home screen ✨", Toast.LENGTH_SHORT).show()
     }
 
     private fun showUnlockDialog(b: RizBundle) {
