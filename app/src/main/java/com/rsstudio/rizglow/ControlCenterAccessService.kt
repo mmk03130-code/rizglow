@@ -49,12 +49,16 @@ class ControlCenterAccessService : AccessibilityService() {
     private fun addStrip() {
         if (strip != null) return
         val h = statusBarHeight() + dp(8)
+        // iOS-style corner swipe (like Themezy): 40% width at top-right, so a
+        // normal swipe-down elsewhere still opens notifications.
+        val w = (resources.displayMetrics.widthPixels * 0.4).toInt()
         val params = WindowManager.LayoutParams(
-            WindowManager.LayoutParams.MATCH_PARENT, h,
+            w, h,
             WindowManager.LayoutParams.TYPE_ACCESSIBILITY_OVERLAY,
-            WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE,
+            WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE or
+                WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN,
             PixelFormat.TRANSLUCENT
-        ).apply { gravity = Gravity.TOP }
+        ).apply { gravity = Gravity.TOP or Gravity.END }
         val v = FrameLayout(this)
         var downY = 0f
         var downX = 0f

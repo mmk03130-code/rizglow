@@ -145,7 +145,7 @@ class ControlCenterActivity : Activity() {
         if (!ControlCenterAccessService.isEnabled(this)) {
             android.app.AlertDialog.Builder(this)
                 .setTitle("Swipe to open")
-                .setMessage("To open the control center with a swipe down on the status bar, " +
+                .setMessage("To open the control center with a swipe down from the top-right corner, " +
                     "Rizglow uses an Accessibility Service. It only watches for that swipe " +
                     "gesture \u2014 it does not read your screen or collect any data.")
                 .setPositiveButton("Allow") { _, _ ->
