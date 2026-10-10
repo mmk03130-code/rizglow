@@ -36,13 +36,19 @@ jobs:
       - name: Build debug APK and AAB
         run: |
           cd "$GITHUB_WORKSPACE"
-          gradle :app:assembleDebug :app:bundleDebug --no-daemon
+          gradle :app:assembleDebug :app:bundleDebug :app:assembleRelease --no-daemon
 
       - name: Upload APK artifact
         uses: actions/upload-artifact@v4
         with:
           name: app-debug-apk
           path: app/build/outputs/apk/debug/*.apk
+
+      - name: Upload unsigned release APK artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: app-release-unsigned-apk
+          path: app/build/outputs/apk/release/*-unsigned.apk
 
       - name: Upload AAB artifact
         uses: actions/upload-artifact@v4
