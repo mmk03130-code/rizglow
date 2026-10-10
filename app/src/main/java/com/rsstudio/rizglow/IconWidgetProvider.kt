@@ -13,6 +13,23 @@ import com.rsstudio.rizglow.model.BundleRepository
  *  Widgets never get the system shortcut "watermark" badge. */
 class IconWidgetProvider : AppWidgetProvider() {
 
+    override fun onReceive(context: Context, intent: Intent) {
+        // Extras from requestPinAppWidget arrive on the first update broadcast.
+        // Save the mapping here so the widget configures itself even when the
+        // launcher never opens the config activity (happens on some launchers).
+        if (intent.action == AppWidgetManager.ACTION_APPWIDGET_UPDATE) {
+            val ids = intent.getIntArrayExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS)
+            val bundleId = intent.getStringExtra("bundleId")
+            val label = intent.getStringExtra("label")
+            if (ids != null && bundleId != null && label != null) {
+                context.getSharedPreferences(PREFS, Context.MODE_PRIVATE).edit().apply {
+                    ids.forEach { putString(key(it), "$bundleId|$label|0") }
+                }.apply()
+            }
+        }
+        super.onReceive(context, intent)
+    }
+
     override fun onUpdate(context: Context, mgr: AppWidgetManager, ids: IntArray) {
         for (id in ids) updateWidget(context, mgr, id)
     }
@@ -44,9 +61,23 @@ class IconWidgetProvider : AppWidgetProvider() {
         }
 
         fun updateWidget(context: Context, mgr: AppWidgetManager, appWidgetId: Int) {
-            val saved = load(context, appWidgetId) ?: return
-            val (_, label, resId) = saved
             val views = RemoteViews(context.packageName, R.layout.widget_icon)
+            val saved = load(context, appWidgetId)
+            if (saved == null) {
+                // Graceful fallback: show the logo, tap opens Rizglow.
+                views.setImageViewResource(R.id.widget_icon_img, R.drawable.logo)
+                val openApp = context.packageManager.getLaunchIntentForPackage(context.packageName)
+                if (openApp != null) {
+                    val pi = PendingIntent.getActivity(
+                        context, appWidgetId, openApp,
+                        PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+                    )
+                    views.setOnClickPendingIntent(R.id.widget_icon_img, pi)
+                }
+                mgr.updateAppWidget(appWidgetId, views)
+                return
+            }
+            val (_, label, resId) = saved
             views.setImageViewResource(R.id.widget_icon_img, resId)
             val target = IconTargets.resolve(context, label)
             if (target != null) {

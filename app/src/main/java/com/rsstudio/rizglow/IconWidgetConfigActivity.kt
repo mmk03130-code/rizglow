@@ -16,13 +16,12 @@ import com.rsstudio.rizglow.model.IconItem
 import com.rsstudio.rizglow.model.RizBundle
 
 /** Configure a Rizglow icon widget: pick the icon it shows and the app it opens.
- *  Launched automatically when the widget is pinned; can also run standalone
- *  when the user adds the widget manually from the launcher. */
+ *  When launched from Rizglow's "No watermark" flow with a pre-picked icon,
+ *  the widget is placed immediately with no extra taps. Otherwise (manual
+ *  widget add from the launcher) a full icon picker is shown. */
 class IconWidgetConfigActivity : Activity() {
 
     private var appWidgetId = AppWidgetManager.INVALID_APPWIDGET_ID
-    private var pickedBundle: RizBundle? = null
-    private var pickedIcon: IconItem? = null
 
     private fun dp(v: Int) = (v * resources.displayMetrics.density).toInt()
 
@@ -34,17 +33,20 @@ class IconWidgetConfigActivity : Activity() {
             AppWidgetManager.EXTRA_APPWIDGET_ID,
             AppWidgetManager.INVALID_APPWIDGET_ID
         ) ?: AppWidgetManager.INVALID_APPWIDGET_ID
-        if (appWidgetId == AppWidgetManager.INVALID_APPWIDGET_ID) finish()
+        if (appWidgetId == AppWidgetManager.INVALID_APPWIDGET_ID) {
+            finish()
+            return
+        }
 
-        // Pre-pick when launched from Rizglow's "Add without watermark" flow.
+        // Pre-picked from Rizglow's pin flow: place immediately.
         val preLabel = intent?.getStringExtra("label")
         val preBundle = intent?.getStringExtra("bundleId")
         if (preLabel != null && preBundle != null) {
             val b = BundleRepository.bundles.find { it.id == preBundle }
             val icon = b?.icons?.find { it.label == preLabel }
             if (b != null && icon != null) {
-                pickedBundle = b
-                pickedIcon = icon
+                place(b, icon)
+                return
             }
         }
 
