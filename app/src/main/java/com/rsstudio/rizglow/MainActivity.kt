@@ -313,14 +313,18 @@ class MainActivity : Activity() {
         view.addView(label)
         view.addView(note)
 
-        AlertDialog.Builder(this)
+        // Only offer pinning when we can actually find the target app.
+        val canPin = resolveTargetIntent(icon.label) != null
+        val builder = AlertDialog.Builder(this)
             .setView(view)
-            .setPositiveButton("Add to Home screen") { d, _ ->
+            .setNegativeButton("Close", null)
+        if (canPin) {
+            builder.setPositiveButton("Add to Home screen") { d, _ ->
                 d.dismiss()
                 createThemedShortcut(icon)
             }
-            .setNegativeButton("Close", null)
-            .show()
+        }
+        builder.show()
     }
 
     /** Resolve the real app behind an icon label on this device.
@@ -328,18 +332,22 @@ class MainActivity : Activity() {
      *  then falls back to well-known package names per OEM. */
     private fun resolveTargetIntent(label: String): Intent? {
         val pm = packageManager
-        val probes: List<Intent> = when (label) {
-            "Phone" -> listOf(Intent(Intent.ACTION_DIAL, Uri.parse("tel:")))
-            "Messages" -> listOf(Intent(Intent.ACTION_MAIN).addCategory("android.intent.category.APP_MESSAGING"))
-            "Camera" -> listOf(Intent(MediaStore.ACTION_IMAGE_CAPTURE))
-            "Photos" -> listOf(Intent(Intent.ACTION_MAIN).addCategory("android.intent.category.APP_GALLERY"))
-            "Clock" -> listOf(Intent(AlarmClock.ACTION_SHOW_ALARMS))
-            "Settings" -> listOf(Intent(Settings.ACTION_SETTINGS))
-            "Music" -> listOf(Intent(Intent.ACTION_MAIN).addCategory("android.intent.category.APP_MUSIC"))
-            "Browser" -> listOf(Intent(Intent.ACTION_VIEW, Uri.parse("https://www.google.com")))
-            else -> emptyList()
+        val probe: Intent? = when (label) {
+            "Phone" -> Intent(Intent.ACTION_DIAL, Uri.parse("tel:"))
+            "Messages" -> Intent(Intent.ACTION_MAIN).addCategory("android.intent.category.APP_MESSAGING")
+            "Camera" -> Intent(MediaStore.ACTION_IMAGE_CAPTURE)
+            "Photos" -> Intent(Intent.ACTION_MAIN).addCategory("android.intent.category.APP_GALLERY")
+            "Clock" -> Intent(AlarmClock.ACTION_SHOW_ALARMS)
+            "Settings" -> Intent(Settings.ACTION_SETTINGS)
+            "Music" -> Intent(Intent.ACTION_MAIN).addCategory("android.intent.category.APP_MUSIC")
+            "Browser" -> Intent(Intent.ACTION_VIEW, Uri.parse("https://www.google.com"))
+            "Maps" -> Intent(Intent.ACTION_MAIN).addCategory("android.intent.category.APP_MAPS")
+            "Mail" -> Intent(Intent.ACTION_MAIN).addCategory("android.intent.category.APP_EMAIL")
+            "Calendar" -> Intent(Intent.ACTION_MAIN).addCategory("android.intent.category.APP_CALENDAR")
+            "Contacts" -> Intent(Intent.ACTION_MAIN).addCategory("android.intent.category.APP_CONTACTS")
+            else -> null
         }
-        for (probe in probes) {
+        if (probe != null) {
             val ai = pm.resolveActivity(probe, 0)?.activityInfo
             if (ai != null) {
                 return Intent(Intent.ACTION_MAIN)
@@ -356,6 +364,20 @@ class MainActivity : Activity() {
             "Settings" -> listOf("com.android.settings")
             "Music" -> listOf("com.google.android.apps.youtube.music", "com.spotify.music", "com.android.music")
             "Browser" -> listOf("com.android.chrome", "com.mi.globalbrowser", "com.sec.android.app.sbrowser", "org.mozilla.firefox")
+            "Maps" -> listOf("com.google.android.apps.maps")
+            "Mail" -> listOf("com.google.android.gm", "com.microsoft.office.outlook")
+            "Calendar" -> listOf("com.google.android.calendar")
+            "Contacts" -> listOf("com.google.android.contacts", "com.android.contacts")
+            "Calculator" -> listOf("com.google.android.calculator", "com.android.calculator2")
+            "Files" -> listOf("com.google.android.apps.nbu.files", "com.android.documentsui")
+            "Video" -> listOf("com.google.android.youtube")
+            "Games" -> listOf("com.google.android.play.games")
+            "Recorder" -> listOf("com.google.android.apps.recorder")
+            "Weather" -> listOf("com.google.android.apps.weather")
+            "Notes" -> listOf("com.google.android.keep")
+            "Reminders" -> listOf("com.google.android.apps.tasks")
+            "Health" -> listOf("com.google.android.apps.healthdata", "com.fitbit.FitbitMobile")
+            "Wallet" -> listOf("com.google.android.apps.walletnfcrel")
             else -> emptyList()
         }
         for (pkg in fallbackPkgs) {
