@@ -78,7 +78,7 @@ class ControlCenterAccessService : AccessibilityService() {
                     if (tracking && isSwipeOpen(this) && !ControlCenterGate.panelOpen) {
                         val dy = e.rawY - downY
                         val dx = e.rawX - downX
-                        if (dy > dp(56) && dy > 2 * abs(dx)) {
+                        if (dy > dp(20) && dy > 2 * abs(dx)) {
                             tracking = false
                             openPanel()
                         }
