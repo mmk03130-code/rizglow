@@ -21,6 +21,7 @@ import kotlin.math.abs
 class ControlCenterAccessService : AccessibilityService() {
 
     private var strip: FrameLayout? = null
+    private var testMode = false
     private lateinit var wm: WindowManager
 
     override fun onServiceConnected() {
@@ -69,6 +70,10 @@ class ControlCenterAccessService : AccessibilityService() {
                 // swipe would be invisible to us. Taps in the corner strip are
                 // harmlessly absorbed (nothing tappable lives there).
                 MotionEvent.ACTION_DOWN -> {
+                    if (testMode) {
+                        android.widget.Toast.makeText(this@ControlCenterAccessService,
+                            "Strip got your tap!", android.widget.Toast.LENGTH_SHORT).show()
+                    }
                     // Unarmed: stay completely out of the way (native UX untouched).
                     if (!isSwipeOpen(this@ControlCenterAccessService)) {
                         tracking = false
@@ -86,6 +91,9 @@ class ControlCenterAccessService : AccessibilityService() {
                         val dx = e.rawX - downX
                         if (dy > dp(20) && dy > 2 * abs(dx)) {
                             tracking = false
+                            android.widget.Toast.makeText(this@ControlCenterAccessService,
+                                "Swipe detected — opening panel…",
+                                android.widget.Toast.LENGTH_SHORT).show()
                             openPanel()
                         }
                     }
@@ -102,19 +110,29 @@ class ControlCenterAccessService : AccessibilityService() {
         }
     }
 
-    /** Test hook: flash the strip red so the user can SEE it. */
+    /** Test hook: red strip + tap feedback, so touch delivery is observable. */
     private fun flashStrip(): Boolean {
         val v = strip ?: return false
+        testMode = true
         v.setBackgroundColor(0x66FF0000)
-        v.postDelayed({ v.setBackgroundColor(0x00000000) }, 3000)
+        v.postDelayed({
+            testMode = false
+            v.setBackgroundColor(0x00000000)
+        }, 5000)
         return true
     }
 
     private fun openPanel() {
-        startActivity(
-            Intent(this, ControlCenterActivity::class.java)
-                .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-        )
+        try {
+            startActivity(
+                Intent(this, ControlCenterActivity::class.java)
+                    .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+            )
+        } catch (e: Exception) {
+            android.widget.Toast.makeText(this,
+                "Panel launch blocked: ${e.javaClass.simpleName}",
+                android.widget.Toast.LENGTH_LONG).show()
+        }
     }
 
     companion object {

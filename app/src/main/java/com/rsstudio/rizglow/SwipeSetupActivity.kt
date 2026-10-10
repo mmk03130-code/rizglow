@@ -149,7 +149,7 @@ class SwipeSetupActivity : Activity() {
     /** Test button wiring is done in onCreate via addTestBtn(); kept simple. */
     private fun addTestBtn(parent: LinearLayout) {
         val t = TextView(this).apply {
-            text = "Flash test strip"
+            text = "Test the strip (5s)"
             textSize = 15f
             setTypeface(typeface, Typeface.BOLD)
             setTextColor(0xFFFFFFFF.toInt())
@@ -164,7 +164,7 @@ class SwipeSetupActivity : Activity() {
             setOnClickListener {
                 if (ControlCenterAccessService.flashStrip()) {
                     Toast.makeText(this@SwipeSetupActivity,
-                        "Look at the top-right corner — red flash = strip is alive",
+                        "Red bar = strip alive. Now TAP the red bar!",
                         Toast.LENGTH_LONG).show()
                 } else {
                     Toast.makeText(this@SwipeSetupActivity,
