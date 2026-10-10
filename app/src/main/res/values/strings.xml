@@ -6,4 +6,10 @@
     <string name="tagline">Wallpapers • Icons • Widgets • Pets</string>
     <string name="widget_label">Rizglow Icon</string>
     <string name="widget_desc">A Rizglow icon without the system watermark badge. Tap to open the app.</string>
+    <string name="widget_clock_label">Rizglow Clock</string>
+    <string name="widget_clock_desc">Aesthetic clock widget in your bundle style.</string>
+    <string name="widget_battery_label">Rizglow Battery</string>
+    <string name="widget_battery_desc">Aesthetic battery widget in your bundle style.</string>
+    <string name="widget_date_label">Rizglow Date</string>
+    <string name="widget_date_desc">Aesthetic date widget in your bundle style.</string>
 </resources>

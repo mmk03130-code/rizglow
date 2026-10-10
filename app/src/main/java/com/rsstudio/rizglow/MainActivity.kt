@@ -13,6 +13,9 @@ import android.graphics.BitmapFactory
 import android.graphics.drawable.Icon
 import android.os.Bundle
 import android.view.Gravity
+import android.view.GestureDetector
+import android.view.MotionEvent
+import android.view.View
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.GridLayout
@@ -20,6 +23,7 @@ import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
+import kotlin.math.abs
 import com.rsstudio.rizglow.ads.UnlockManager
 import com.rsstudio.rizglow.model.BundleRepository
 import com.rsstudio.rizglow.model.IconItem
@@ -32,6 +36,7 @@ class MainActivity : Activity() {
     private lateinit var dots: List<View>
     private lateinit var labels: List<TextView>
     private lateinit var tabs: List<LinearLayout>
+    private var currentTab = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -67,6 +72,31 @@ class MainActivity : Activity() {
         )
         tabs.forEachIndexed { i, t -> t.setOnClickListener { selectTab(i) } }
 
+        // Swipe left/right on any page to switch tabs (helps phones where the
+        // bottom tabs sit too close to the system back button/gestures).
+        val swipeDetector = GestureDetector(this,
+            object : GestureDetector.SimpleOnGestureListener() {
+                override fun onFling(
+                    e1: MotionEvent?, e2: MotionEvent,
+                    velocityX: Float, velocityY: Float
+                ): Boolean {
+                    if (e1 == null) return false
+                    val dx = e2.x - e1.x
+                    val dy = e2.y - e1.y
+                    if (abs(dx) > abs(dy) * 1.5f && abs(dx) > dp(80) && abs(velocityX) > 400) {
+                        if (dx < 0) selectTab((currentTab + 1).coerceAtMost(3))
+                        else selectTab((currentTab - 1).coerceAtLeast(0))
+                        return true
+                    }
+                    return false
+                }
+            })
+        val swipeTouch = View.OnTouchListener { _, e ->
+            swipeDetector.onTouchEvent(e)
+            false // don't consume: scrolling still works
+        }
+        pages.forEach { it.setOnTouchListener(swipeTouch) }
+
         refreshAll()
         selectTab(0)
     }
@@ -80,9 +110,11 @@ class MainActivity : Activity() {
         populateDiscover()
         buildWallpapersTab()
         buildIconsTab()
+        buildWidgetsTab()
     }
 
     private fun selectTab(i: Int) {
+        currentTab = i
         pages.forEachIndexed { idx, v -> v.visibility = if (idx == i) View.VISIBLE else View.GONE }
         dots.forEachIndexed { idx, d -> d.visibility = if (idx == i) View.VISIBLE else View.INVISIBLE }
         val text = getColor(R.color.text)
@@ -166,6 +198,53 @@ class MainActivity : Activity() {
                 }
             }
         }
+    }
+
+    // ---------- Widgets tab ----------
+
+    private fun buildWidgetsTab() {
+        val container = findViewById<LinearLayout>(R.id.widgets_list)
+        container.removeAllViews()
+        val items = listOf(
+            Triple("Rizglow Clock", "Live clock + date in your bundle style.", 0xFFB388FF.toInt()),
+            Triple("Rizglow Battery", "Battery level with tap-to-refresh, in your bundle style.", 0xFFF5A8C0.toInt()),
+            Triple("Rizglow Date", "Big day + date in your bundle style.", 0xFF7C6CFF.toInt())
+        )
+        for ((name, desc, accent) in items) {
+            val card = LinearLayout(this).apply {
+                orientation = LinearLayout.VERTICAL
+                setPadding(dp(16), dp(14), dp(16), dp(14))
+                background = GradientDrawable().apply {
+                    shape = GradientDrawable.RECTANGLE
+                    cornerRadius = dp(16).toFloat()
+                    setColor(getColor(R.color.surface))
+                    setStroke(dp(1), accent)
+                }
+                layoutParams = LinearLayout.LayoutParams(
+                    LinearLayout.LayoutParams.MATCH_PARENT,
+                    LinearLayout.LayoutParams.WRAP_CONTENT
+                ).apply { bottomMargin = dp(12) }
+            }
+            card.addView(TextView(this).apply {
+                text = name
+                textSize = 17f
+                setTypeface(typeface, Typeface.BOLD)
+                setTextColor(accent)
+            })
+            card.addView(TextView(this).apply {
+                text = desc
+                textSize = 13f
+                setTextColor(getColor(R.color.muted))
+                setPadding(0, dp(4), 0, 0)
+            })
+            container.addView(card)
+        }
+        container.addView(TextView(this).apply {
+            text = "To add: long-press your home screen → Widgets → choose a Rizglow widget → pick a bundle style."
+            textSize = 13f
+            setTextColor(getColor(R.color.muted))
+            setPadding(dp(4), dp(8), dp(4), 0)
+        })
     }
 
     // ---------- Icons tab: per-bundle sets ----------
