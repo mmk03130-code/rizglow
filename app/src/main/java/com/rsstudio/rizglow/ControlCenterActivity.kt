@@ -2,6 +2,9 @@ package com.rsstudio.rizglow
 
 import android.app.Activity
 import android.app.NotificationManager
+import android.app.StatusBarManager
+import android.content.ComponentName
+import android.graphics.drawable.Icon
 import android.content.Context
 import android.content.Intent
 import android.content.res.ColorStateList
@@ -60,6 +63,7 @@ class ControlCenterActivity : Activity() {
         root.addView(scroll)
 
         panel.addView(headerRow())
+        panel.addView(setupRow())
         panel.addView(connectivityRow())
         panel.addView(musicCard())
         panel.addView(smallTilesRow())
@@ -81,6 +85,84 @@ class ControlCenterActivity : Activity() {
     override fun onResume() {
         super.onResume()
         refreshTiles()
+        refreshBubbleBtn()
+    }
+
+    private var bubbleBtn: TextView? = null
+
+    private fun setupRow(): LinearLayout {
+        val row = LinearLayout(this).apply {
+            orientation = LinearLayout.HORIZONTAL
+            gravity = Gravity.CENTER
+            setPadding(0, 0, 0, dp(10))
+        }
+        val pill = { text: String, onClick: () -> Unit ->
+            TextView(this).apply {
+                this.text = text
+                textSize = 12f
+                setTypeface(typeface, android.graphics.Typeface.BOLD)
+                setTextColor(0xFFFFFFFF.toInt())
+                setPadding(dp(14), dp(8), dp(14), dp(8))
+                background = android.graphics.drawable.GradientDrawable().apply {
+                    shape = android.graphics.drawable.GradientDrawable.RECTANGLE
+                    cornerRadius = dp(20).toFloat()
+                    setColor(0x55FFFFFF.toInt())
+                }
+                layoutParams = LinearLayout.LayoutParams(
+                    LinearLayout.LayoutParams.WRAP_CONTENT,
+                    LinearLayout.LayoutParams.WRAP_CONTENT
+                ).apply { marginEnd = dp(8) }
+                isClickable = true
+                setOnClickListener { onClick() }
+            }
+        }
+        row.addView(pill("+ Quick Settings tile") { addTilePrompt() })
+        val bb = pill("") { toggleBubble() }
+        bubbleBtn = bb
+        row.addView(bb)
+        refreshBubbleBtn()
+        return row
+    }
+
+    private fun refreshBubbleBtn() {
+        bubbleBtn?.text = if (BubbleService.isRunning(this)) "Bubble: ON" else "Bubble: OFF"
+    }
+
+    private fun toggleBubble() {
+        if (BubbleService.isRunning(this)) {
+            stopService(Intent(this, BubbleService::class.java))
+        } else {
+            if (!Settings.canDrawOverlays(this)) {
+                Toast.makeText(this, "Allow \"Display over other apps\", then tap again",
+                    Toast.LENGTH_LONG).show()
+                startActivity(Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION))
+                return
+            }
+            startService(Intent(this, BubbleService::class.java))
+            Toast.makeText(this, "Floating cat is live — drag it anywhere, tap to open",
+                Toast.LENGTH_LONG).show()
+        }
+        refreshBubbleBtn()
+    }
+
+    private fun addTilePrompt() {
+        if (Build.VERSION.SDK_INT >= 33) {
+            val sbm = getSystemService(StatusBarManager::class.java)
+            val cn = ComponentName(this, ControlCenterTileService::class.java)
+            val icon = Icon.createWithResource(this, R.drawable.ic_launcher)
+            sbm.requestAddTileService(cn, "Rizglow Panel", icon, mainExecutor) { result ->
+                val msg = when (result) {
+                    StatusBarManager.TILE_ADD_REQUEST_RESULT_TILE_ADDED -> "Tile added!"
+                    StatusBarManager.TILE_ADD_REQUEST_RESULT_TILE_ALREADY_ADDED -> "Tile is already added"
+                    else -> "Tile not added"
+                }
+                Toast.makeText(this, msg, Toast.LENGTH_SHORT).show()
+            }
+        } else {
+            Toast.makeText(this,
+                "Swipe down → edit tiles (pencil) → drag \"Rizglow Panel\" in",
+                Toast.LENGTH_LONG).show()
+        }
     }
 
     // ---------- builders ----------

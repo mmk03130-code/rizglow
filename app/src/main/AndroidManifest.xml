@@ -2,6 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
 
     <uses-permission android:name="android.permission.SET_WALLPAPER" />
+    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
 
     <!-- Package visibility (Android 11+): declare the apps we resolve for themed shortcuts -->
     <queries>
@@ -219,6 +220,11 @@
                 <action android:name="android.service.quicksettings.action.QS_TILE" />
             </intent-filter>
         </service>
+
+
+        <service
+            android:name=".BubbleService"
+            android:exported="false" />
 
     </application>
 </manifest>
