@@ -31,3 +31,9 @@ android {
         jvmTarget = "17"
     }
 }
+
+dependencies {
+    // Google Mobile Ads — rewarded ads for bundle unlocks.
+    // Runs on official TEST ad units (see ads/AdUnits.kt) until real IDs land.
+    implementation("com.google.android.gms:play-services-ads:23.0.0")
+}

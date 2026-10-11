@@ -1,18 +1,27 @@
 package com.rsstudio.rizglow.ads
 
+import android.app.Activity
+import android.app.AlertDialog
 import android.content.Context
+import android.widget.Toast
+import com.google.android.gms.ads.AdError
+import com.google.android.gms.ads.AdRequest
+import com.google.android.gms.ads.FullScreenContentCallback
+import com.google.android.gms.ads.LoadAdError
+import com.google.android.gms.ads.MobileAds
+import com.google.android.gms.ads.OnUserEarnedRewardListener
+import com.google.android.gms.ads.rewarded.RewardedAd
+import com.google.android.gms.ads.rewarded.RewardedAdLoadCallback
 
 /**
- * Monetization seam for Rizglow.
+ * Monetization for Rizglow.
  *
  * Every bundle is either locked or unlocked. The FIRST bundle ("midnight_velvet")
- * is always free so users fall in love; the rest unlock via rewarded ads.
+ * is always free; the rest unlock via a rewarded ad — one watched video per
+ * bundle, unlocked forever.
  *
- * AdMob integration (later, free account):
- *   1. Add play-services-ads dependency + AdMob app ID to the manifest.
- *   2. In MainActivity.showUnlockDialog, load a RewardedAd with the bundle's
- *      ad unit ID and call UnlockManager.unlock() in onUserEarnedReward().
- * Nothing else changes — all lock checks already go through here.
+ * Ads run on Google's OFFICIAL TEST ad units (see AdUnits.kt), so this build
+ * serves test ads only. Swapping in real AdMob IDs later is a drop-in.
  */
 object UnlockManager {
 
@@ -25,26 +34,65 @@ object UnlockManager {
             .getBoolean(key(bundleId), false)
     }
 
-    /** Called after the user earns the reward (or via the dev shortcut for now). */
+    /** Called after the user earns the reward. Persists across restarts. */
     fun unlock(ctx: Context, bundleId: String) {
         ctx.getSharedPreferences(PREFS, Context.MODE_PRIVATE)
             .edit().putBoolean(key(bundleId), true).apply()
     }
 
-    /** Show the unlock prompt: rewarded ad (placeholder) to unlock the bundle. */
+    /**
+     * Show the unlock prompt. "Watch ad" loads a rewarded ad for this
+     * bundle's slot; a completed view unlocks the bundle permanently.
+     * If the ad fails to load (offline etc.), the user is told to retry —
+     * no free unlock, no dead end.
+     */
     fun promptUnlock(ctx: Context, bundleId: String, onUnlocked: (() -> Unit)? = null) {
-        android.app.AlertDialog.Builder(ctx)
+        val activity = ctx as? Activity ?: run {
+            unlock(ctx, bundleId) // non-activity host: cannot show ads
+            onUnlocked?.invoke()
+            return
+        }
+        AlertDialog.Builder(ctx)
             .setTitle("Unlock this bundle")
             .setMessage("Watch a short ad to unlock all wallpapers and icons in this bundle, forever.")
             .setPositiveButton("Watch ad") { d, _ ->
-                // TODO: Real rewarded ad goes here (AdMob). Dev shortcut for now.
-                unlock(ctx, bundleId)
-                android.widget.Toast.makeText(ctx, "Bundle unlocked! 🎉", android.widget.Toast.LENGTH_SHORT).show()
                 d.dismiss()
-                onUnlocked?.invoke()
+                Toast.makeText(ctx, "Loading ad…", Toast.LENGTH_SHORT).show()
+                loadAndShow(activity, bundleId, onUnlocked)
             }
             .setNegativeButton("Not now", null)
             .show()
+    }
+
+    private fun loadAndShow(
+        activity: Activity,
+        bundleId: String,
+        onUnlocked: (() -> Unit)?
+    ) {
+        val adUnitId = AdUnits.forBundle(bundleId)
+        RewardedAd.load(activity, adUnitId, AdRequest.Builder().build(),
+            object : RewardedAdLoadCallback() {
+                override fun onAdLoaded(ad: RewardedAd) {
+                    ad.fullScreenContentCallback = object : FullScreenContentCallback() {
+                        override fun onAdFailedToShowFullScreenContent(e: AdError) {
+                            Toast.makeText(activity,
+                                "Ad couldn't play — try again", Toast.LENGTH_SHORT).show()
+                        }
+                    }
+                    ad.show(activity, OnUserEarnedRewardListener {
+                        unlock(activity, bundleId)
+                        Toast.makeText(activity,
+                            "Bundle unlocked! 🎉", Toast.LENGTH_SHORT).show()
+                        onUnlocked?.invoke()
+                    })
+                }
+
+                override fun onAdFailedToLoad(error: LoadAdError) {
+                    Toast.makeText(activity,
+                        "Ad didn't load (check connection) — try again",
+                        Toast.LENGTH_LONG).show()
+                }
+            })
     }
 
     private fun key(bundleId: String) = "unlocked_$bundleId"

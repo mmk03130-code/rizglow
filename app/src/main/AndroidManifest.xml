@@ -114,6 +114,12 @@
         android:allowBackup="true"
         android:supportsRtl="true">
 
+        <!-- AdMob App ID: official TEST id. Replace with the real AdMob app
+             ID from the AdMob console when going live. -->
+        <meta-data
+            android:name="com.google.android.gms.ads.APPLICATION_ID"
+            android:value="ca-app-pub-3940256099942544~3347511713" />
+
         <activity
             android:name=".SplashActivity"
             android:theme="@style/Theme.Rizglow.Splash"

@@ -25,6 +25,6 @@ os.makedirs("tools/.rstub", exist_ok=True)
 open("tools/.rstub/R.kt", "w").write("\n".join(out))
 PYEOF
 rm -rf tools/.kout && mkdir -p tools/.kout
-~/workspace/kotlinc/bin/kotlinc $(find app/src/main/java -name "*.kt") tools/.rstub/R.kt \
+~/workspace/kotlinc/bin/kotlinc $(find app/src/main/java -name "*.kt") tools/.rstub/R.kt tools/.rstub/ads-stub.kt tools/.rstub/rewarded-stub.kt \
   -cp ~/workspace/android-sdk/platforms/android-36/android.jar \
   -d tools/.kout -jvm-target 17 -nowarn && echo COMPILE_OK

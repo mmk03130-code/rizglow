@@ -43,6 +43,9 @@ class MainActivity : Activity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
+        // Init Google Mobile Ads once (test ad units until real IDs land).
+        com.google.android.gms.ads.MobileAds.initialize(this) {}
+
         findViewById<TextView>(R.id.btn_about).setOnClickListener {
             startActivity(Intent(this, AboutActivity::class.java))
         }
