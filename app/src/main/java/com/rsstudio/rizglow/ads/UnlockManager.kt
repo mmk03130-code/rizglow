@@ -31,5 +31,21 @@ object UnlockManager {
             .edit().putBoolean(key(bundleId), true).apply()
     }
 
+    /** Show the unlock prompt: rewarded ad (placeholder) to unlock the bundle. */
+    fun promptUnlock(ctx: Context, bundleId: String, onUnlocked: (() -> Unit)? = null) {
+        android.app.AlertDialog.Builder(ctx)
+            .setTitle("Unlock this bundle")
+            .setMessage("Watch a short ad to unlock all wallpapers and icons in this bundle, forever.")
+            .setPositiveButton("Watch ad") { d, _ ->
+                // TODO: Real rewarded ad goes here (AdMob). Dev shortcut for now.
+                unlock(ctx, bundleId)
+                android.widget.Toast.makeText(ctx, "Bundle unlocked! 🎉", android.widget.Toast.LENGTH_SHORT).show()
+                d.dismiss()
+                onUnlocked?.invoke()
+            }
+            .setNegativeButton("Not now", null)
+            .show()
+    }
+
     private fun key(bundleId: String) = "unlocked_$bundleId"
 }

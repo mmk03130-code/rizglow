@@ -10,6 +10,7 @@ import android.view.MotionEvent
 import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
+import com.rsstudio.rizglow.ads.UnlockManager
 import kotlin.math.abs
 
 /** Full-screen wallpaper preview: swipe through the bundle's wallpapers,
@@ -18,6 +19,7 @@ class WallpaperPreviewActivity : Activity() {
 
     private var ids: IntArray = intArrayOf()
     private var index: Int = 0
+    private var lockedBundleId: String? = null
     private lateinit var image: ImageView
     private lateinit var counter: TextView
     private lateinit var heart: TextView
@@ -34,6 +36,7 @@ class WallpaperPreviewActivity : Activity() {
             return
         }
         index = intent.getIntExtra(EXTRA_INDEX, 0).coerceIn(ids.indices)
+        lockedBundleId = intent.getStringExtra(EXTRA_LOCKED_BUNDLE)
 
         image = findViewById(R.id.preview_image)
         counter = findViewById(R.id.preview_counter)
@@ -66,7 +69,19 @@ class WallpaperPreviewActivity : Activity() {
             val nowFav = FavoritesManager.toggle(this, ids[index])
             heart.text = if (nowFav) "❤" else "🤍"
         }
-        findViewById<TextView>(R.id.btn_set).setOnClickListener { showApplyDialog() }
+        val setBtn = findViewById<TextView>(R.id.btn_set)
+        if (lockedBundleId != null) {
+            setBtn.text = "🔒 Unlock to set"
+        }
+        setBtn.setOnClickListener {
+            val locked = lockedBundleId
+            if (locked != null) {
+                // Desire before paywall: they saw it, now unlock to use it.
+                UnlockManager.promptUnlock(this, locked)
+            } else {
+                showApplyDialog()
+            }
+        }
     }
 
     private fun refresh() {
@@ -107,5 +122,6 @@ class WallpaperPreviewActivity : Activity() {
         const val EXTRA_RES_ID = "res_id"
         const val EXTRA_RES_IDS = "res_ids"
         const val EXTRA_INDEX = "index"
+        const val EXTRA_LOCKED_BUNDLE = "locked_bundle"
     }
 }

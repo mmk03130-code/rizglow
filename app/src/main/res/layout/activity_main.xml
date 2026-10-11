@@ -191,6 +191,48 @@
                 </LinearLayout>
             </ScrollView>
         </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/page_panel"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:visibility="gone">
+
+            <ScrollView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="20dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Control Panel"
+                        android:textSize="20sp"
+                        android:textStyle="bold"
+                        android:textColor="@color/text" />
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="4dp"
+                        android:layout_marginBottom="16dp"
+                        android:text="Swipe down from the top-right corner of any screen to float it in."
+                        android:textSize="14sp"
+                        android:textColor="@color/muted" />
+
+                    <LinearLayout
+                        android:id="@+id/panel_list"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical" />
+                </LinearLayout>
+            </ScrollView>
+        </LinearLayout>
     </FrameLayout>
 
     <!-- bottom tabs -->
@@ -243,6 +285,17 @@
                 android:visibility="invisible" />
             <TextView android:id="@+id/label_widgets" android:layout_width="wrap_content" android:layout_height="wrap_content"
                 android:text="Widgets" android:textSize="13sp" android:textColor="@color/muted" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/tab_panel"
+            android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1"
+            android:orientation="vertical" android:gravity="center" android:padding="6dp">
+            <View android:id="@+id/dot_panel" android:layout_width="6dp" android:layout_height="6dp"
+                android:background="@drawable/dot_selected" android:layout_marginBottom="6dp"
+                android:visibility="invisible" />
+            <TextView android:id="@+id/label_panel" android:layout_width="wrap_content" android:layout_height="wrap_content"
+                android:text="Panel" android:textSize="13sp" android:textColor="@color/muted" />
         </LinearLayout>
     </LinearLayout>
 </LinearLayout>

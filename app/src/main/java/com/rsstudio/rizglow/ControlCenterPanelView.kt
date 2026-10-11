@@ -5,7 +5,6 @@ import android.app.StatusBarManager
 import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
-import android.content.res.ColorStateList
 import android.graphics.drawable.Icon
 import android.hardware.camera2.CameraCharacteristics
 import android.hardware.camera2.CameraManager
@@ -15,10 +14,10 @@ import android.provider.Settings
 import android.view.Gravity
 import android.view.KeyEvent
 import android.view.View
+import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.ScrollView
-import android.widget.SeekBar
 import android.widget.TextView
 import android.widget.Toast
 
@@ -45,8 +44,10 @@ class ControlCenterPanelView(
     private fun canWrite() = Settings.System.canWrite(context)
 
     /** All startActivity calls funnel through here: NEW_TASK is required when
-     *  the host is a Service, harmless when it's an Activity. */
+     *  the host is a Service, harmless when it's an Activity.
+     *  The panel dismisses first so the new app doesn't open behind it. */
     private fun launch(intent: Intent) {
+        onDismiss()
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
         context.startActivity(intent)
     }
@@ -66,7 +67,13 @@ class ControlCenterPanelView(
         }
         val scroll = ScrollView(context).apply {
             layoutParams = LayoutParams(dp(panelWidthDp(context)), LayoutParams.WRAP_CONTENT)
-            addView(panel)
+            isFillViewport = true
+            addView(panel.apply {
+                layoutParams = FrameLayout.LayoutParams(
+                    FrameLayout.LayoutParams.MATCH_PARENT,
+                    FrameLayout.LayoutParams.WRAP_CONTENT
+                )
+            })
         }
         addView(scroll)
 
@@ -101,7 +108,7 @@ class ControlCenterPanelView(
         val row = LinearLayout(context).apply {
             orientation = HORIZONTAL
             gravity = Gravity.CENTER
-            setPadding(0, 0, 0, dp(14))
+            setPadding(0, 0, 0, dp(if (compact) 10 else 14))
         }
         val pill = { text: String, onClick: () -> Unit ->
             TextView(context).apply {
@@ -146,7 +153,6 @@ class ControlCenterPanelView(
             !ControlCenterAccessService.isSwipeOpen(context)
         ) {
             launch(Intent(context, SwipeSetupActivity::class.java))
-            onDismiss()
             return
         }
         ControlCenterAccessService.setSwipeOpen(context, false)
@@ -227,7 +233,7 @@ class ControlCenterPanelView(
             gravity = Gravity.CENTER
             setBackgroundResource(R.drawable.cc_tile_bg)
             setPadding(dp(4), dp(10), dp(4), dp(10))
-            layoutParams = LayoutParams(0, dp(if (compact) 70 else 86), 1f).apply {
+            layoutParams = LayoutParams(0, dp(if (compact) 62 else 86), 1f).apply {
                 marginEnd = dp(10)
             }
             isClickable = true
@@ -257,7 +263,7 @@ class ControlCenterPanelView(
     private fun connectivityRow(): LinearLayout {
         val row = LinearLayout(context).apply {
             orientation = HORIZONTAL
-            setPadding(0, 0, 0, dp(14))
+            setPadding(0, 0, 0, dp(if (compact) 10 else 14))
         }
         row.addView(tile("airplane", "Airplane") {
             launch(Intent(Settings.ACTION_WIRELESS_SETTINGS))
@@ -333,7 +339,7 @@ class ControlCenterPanelView(
     private fun smallTilesRow(): LinearLayout {
         val row = LinearLayout(context).apply {
             orientation = HORIZONTAL
-            setPadding(0, 0, 0, dp(14))
+            setPadding(0, 0, 0, dp(if (compact) 10 else 14))
         }
         row.addView(tile("rotate", "Rotate") { toggleRotate() })
         row.addView(tile("silent", "Silent") { toggleSilent() })
@@ -354,7 +360,7 @@ class ControlCenterPanelView(
         val row = LinearLayout(context).apply {
             orientation = HORIZONTAL
             gravity = Gravity.CENTER
-            setPadding(0, 0, 0, dp(14))
+            setPadding(0, 0, 0, dp(if (compact) 10 else 14))
         }
         row.addView(sliderCard("\u2600", "Brightness", 255,
             init = {
@@ -366,6 +372,10 @@ class ControlCenterPanelView(
                 if (canWrite()) {
                     Settings.System.putInt(context.contentResolver, Settings.System.SCREEN_BRIGHTNESS, it)
                 } else {
+                    // Explain first, then send to settings — no more "fake" feeling.
+                    Toast.makeText(context,
+                        "Allow Rizglow to modify system settings to control brightness",
+                        Toast.LENGTH_LONG).show()
                     launch(Intent(Settings.ACTION_MANAGE_WRITE_SETTINGS))
                 }
             }))
@@ -385,7 +395,7 @@ class ControlCenterPanelView(
             gravity = Gravity.CENTER_HORIZONTAL
             setBackgroundResource(R.drawable.cc_slider_bg)
             setPadding(dp(8), dp(12), dp(8), dp(12))
-            layoutParams = LayoutParams(0, dp(190), 1f)
+            layoutParams = LayoutParams(0, dp(if (compact) 150 else 190), 1f)
         }
         card.addView(TextView(context).apply {
             text = icon
@@ -400,24 +410,15 @@ class ControlCenterPanelView(
             setTextColor(0xFF6B4A8F.toInt())
             gravity = Gravity.CENTER
         })
-        val sb = SeekBar(context).apply {
+        val slider = VerticalSlider(context).apply {
             this.max = max
             progress = init().coerceIn(0, max)
-            rotation = 270f
-            layoutParams = LayoutParams(dp(150), dp(48)).apply {
-                topMargin = dp(52)
-            }
-            progressTintList = ColorStateList.valueOf(0xFF9B6BD3.toInt())
-            thumbTintList = ColorStateList.valueOf(0xFF7A4FB5.toInt())
-            setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
-                override fun onProgressChanged(s: SeekBar?, v: Int, fromUser: Boolean) {
-                    if (fromUser) onChange(v)
-                }
-                override fun onStartTrackingTouch(s: SeekBar?) {}
-                override fun onStopTrackingTouch(s: SeekBar?) {}
-            })
+            layoutParams = LayoutParams(
+                LayoutParams.MATCH_PARENT, 0, 1f
+            ).apply { topMargin = dp(8) }
         }
-        card.addView(sb)
+        slider.onChange = { v -> onChange(v) }
+        card.addView(slider)
         return card
     }
 
