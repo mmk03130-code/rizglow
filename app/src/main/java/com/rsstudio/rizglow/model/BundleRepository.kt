@@ -476,54 +476,54 @@ object BundleRepository {
             wallpapers = ndWallpapers,
             icons = ndIcons
         ),
-        RizBundle(
-            id = "web_slinger",
-            name = "Web Slinger",
-            tagline = "Red webs & rooftop heroes",
-            accentColor = 0xFFE53935.toInt(),
-            wallpapers = wsWallpapers,
-            icons = wsIcons
-        ),
-        RizBundle(
-            id = "neo_tokyo",
-            name = "Neo Tokyo",
-            tagline = "Anime nights in neon rain",
-            accentColor = 0xFF00E5FF.toInt(),
-            wallpapers = ntWallpapers,
-            icons = ntIcons
-        ),
-        RizBundle(
-            id = "cherry_bow",
-            name = "Cherry Bow",
-            tagline = "Coquette dreams in pink",
-            accentColor = 0xFFE65096.toInt(),
-            wallpapers = cbWallpapers,
-            icons = cbIcons
-        ),
-        RizBundle(
-            id = "street_phantom",
-            name = "Street Phantom",
-            tagline = "Dark urban & powerful",
-            accentColor = 0xFF9AA0A6.toInt(),
-            wallpapers = spWallpapers,
-            icons = spIcons
-        ),
-        RizBundle(
-            id = "midnight_academy",
-            name = "Midnight Academy",
-            tagline = "Dark academia magic",
-            accentColor = 0xFFD4A017.toInt(),
-            wallpapers = maWallpapers,
-            icons = maIcons
-        ),
-        RizBundle(
-            id = "midnight_drive",
-            name = "Midnight Drive",
-            tagline = "Cars & night highways",
-            accentColor = 0xFFFF6D00.toInt(),
-            wallpapers = mdWallpapers,
-            icons = mdIcons
-        ),
+//        RizBundle(
+//            id = "web_slinger",
+//            name = "Web Slinger",
+//            tagline = "Red webs & rooftop heroes",
+//            accentColor = 0xFFE53935.toInt(),
+//            wallpapers = wsWallpapers,
+//            icons = wsIcons
+//        ),
+//        RizBundle(
+//            id = "neo_tokyo",
+//            name = "Neo Tokyo",
+//            tagline = "Anime nights in neon rain",
+//            accentColor = 0xFF00E5FF.toInt(),
+//            wallpapers = ntWallpapers,
+//            icons = ntIcons
+//        ),
+//        RizBundle(
+//            id = "cherry_bow",
+//            name = "Cherry Bow",
+//            tagline = "Coquette dreams in pink",
+//            accentColor = 0xFFE65096.toInt(),
+//            wallpapers = cbWallpapers,
+//            icons = cbIcons
+//        ),
+//        RizBundle(
+//            id = "street_phantom",
+//            name = "Street Phantom",
+//            tagline = "Dark urban & powerful",
+//            accentColor = 0xFF9AA0A6.toInt(),
+//            wallpapers = spWallpapers,
+//            icons = spIcons
+//        ),
+//        RizBundle(
+//            id = "midnight_academy",
+//            name = "Midnight Academy",
+//            tagline = "Dark academia magic",
+//            accentColor = 0xFFD4A017.toInt(),
+//            wallpapers = maWallpapers,
+//            icons = maIcons
+//        ),
+//        RizBundle(
+//            id = "midnight_drive",
+//            name = "Midnight Drive",
+//            tagline = "Cars & night highways",
+//            accentColor = 0xFFFF6D00.toInt(),
+//            wallpapers = mdWallpapers,
+//            icons = mdIcons
+//        ),
         RizBundle(
             id = "ghost_protocol",
             name = "Ghost Protocol",
