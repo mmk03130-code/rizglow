@@ -36,8 +36,8 @@ jobs:
       - name: Build debug APK and AAB
         run: |
           cd "$GITHUB_WORKSPACE"
+          set -o pipefail
           gradle :app:assembleDebug :app:bundleDebug :app:assembleRelease --no-daemon 2>&1 | tee /tmp/build-output.log
-          echo "EXIT_CODE=${PIPESTATUS[0]}" | tee -a /tmp/build-output.log
 
       - name: Upload build log on failure
         if: failure()
