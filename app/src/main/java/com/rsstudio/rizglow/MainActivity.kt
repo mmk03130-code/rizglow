@@ -17,9 +17,9 @@ import android.view.Gravity
 import android.view.GestureDetector
 import android.view.MotionEvent
 import android.view.View
-import android.view.ViewOutlineProvider
 import android.view.LayoutInflater
 import android.widget.GridLayout
+import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
@@ -130,53 +130,101 @@ class MainActivity : Activity() {
     private fun populateDiscover() {
         val container = findViewById<LinearLayout>(R.id.discover_list)
         container.removeAllViews()
-        // Feature card: floating control center
-        val ccCard = LinearLayout(this).apply {
-            orientation = LinearLayout.VERTICAL
-            setPadding(dp(16), dp(14), dp(16), dp(14))
-            background = GradientDrawable().apply {
-                shape = GradientDrawable.RECTANGLE
-                cornerRadius = dp(20).toFloat()
-                colors = intArrayOf(0xFF2A1F3D.toInt(), 0xFF17161E.toInt())
-                orientation = GradientDrawable.Orientation.TL_BR
-                setStroke(dp(1), 0x40B388FF.toInt())
-            }
+        // Panel Themes: horizontal theme switcher (iControl pattern).
+        container.addView(TextView(this).apply {
+            text = "Panel Themes"
+            textSize = 17f
+            setTypeface(typeface, Typeface.BOLD)
+            setTextColor(getColor(R.color.text))
+            setPadding(0, 0, 0, dp(10))
+        })
+        val themeRow = LinearLayout(this).apply {
+            orientation = LinearLayout.HORIZONTAL
             layoutParams = LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.MATCH_PARENT,
                 LinearLayout.LayoutParams.WRAP_CONTENT
-            ).apply { bottomMargin = dp(12) }
+            ).apply { bottomMargin = dp(16) }
+        }
+        // Current theme: Midnight Velvet panel.
+        val themeCard = FrameLayout(this).apply {
+            layoutParams = LinearLayout.LayoutParams(dp(140), dp(180)).apply {
+                marginEnd = dp(12)
+            }
+            background = GradientDrawable().apply {
+                shape = GradientDrawable.RECTANGLE
+                cornerRadius = dp(16).toFloat()
+                setColor(getColor(R.color.surface))
+                setStroke(dp(2), 0xFFB388FF.toInt())
+            }
+            clipToOutline = true
             isClickable = true
             isFocusable = true
             setOnClickListener {
                 startActivity(Intent(this@MainActivity, ControlCenterActivity::class.java))
             }
         }
-        ccCard.addView(TextView(this).apply {
-            text = "Control Center"
-            textSize = 17f
-            setTypeface(typeface, Typeface.BOLD)
-            setTextColor(0xFFB388FF.toInt())
-        })
-        ccCard.addView(TextView(this).apply {
-            text = "Fuzzy floating quick toggles — torch, brightness, music + your black cat. Tap to open."
+        val themePreview = ImageView(this).apply {
+            setImageResource(R.drawable.cc_panel_bg)
+            scaleType = ImageView.ScaleType.CENTER_CROP
+            layoutParams = FrameLayout.LayoutParams(
+                FrameLayout.LayoutParams.MATCH_PARENT, dp(120)
+            )
+        }
+        themeCard.addView(themePreview)
+        val themeLabel = TextView(this).apply {
+            text = "Midnight Velvet\nTap to preview"
             textSize = 13f
+            setTypeface(typeface, Typeface.BOLD)
+            setTextColor(getColor(R.color.text))
+            gravity = Gravity.CENTER
+            setPadding(dp(8), dp(4), dp(8), dp(8))
+            layoutParams = FrameLayout.LayoutParams(
+                FrameLayout.LayoutParams.MATCH_PARENT,
+                FrameLayout.LayoutParams.WRAP_CONTENT,
+                Gravity.BOTTOM
+            )
+        }
+        themeCard.addView(themeLabel)
+        themeRow.addView(themeCard)
+        // Coming-soon slot.
+        val soonCard = TextView(this).apply {
+            text = "+\nMore soon"
+            textSize = 15f
             setTextColor(getColor(R.color.muted))
-        })
-        container.addView(ccCard)
+            gravity = Gravity.CENTER
+            layoutParams = LinearLayout.LayoutParams(dp(140), dp(180))
+            background = GradientDrawable().apply {
+                shape = GradientDrawable.RECTANGLE
+                cornerRadius = dp(16).toFloat()
+                setColor(getColor(R.color.surface))
+                setStroke(dp(1), getColor(R.color.muted))
+            }
+        }
+        themeRow.addView(soonCard)
+        container.addView(themeRow)
         val inflater = LayoutInflater.from(this)
         for (b in BundleRepository.bundles) {
             val card = inflater.inflate(R.layout.item_bundle, container, false)
-            // Clip cover art to the card's rounded corners.
-            card.clipToOutline = true
-            card.outlineProvider = ViewOutlineProvider.BACKGROUND
             card.findViewById<TextView>(R.id.card_name).text = b.name
             card.findViewById<TextView>(R.id.card_tagline).text = b.tagline
-            // Cover art: first wallpaper, or hide the ImageView if none.
-            val cover = card.findViewById<ImageView>(R.id.card_cover)
+            // Phone mockup: wallpaper + 4 sample icons.
+            val mockupWp = card.findViewById<ImageView>(R.id.card_mockup_wallpaper)
             if (b.wallpapers.isNotEmpty()) {
-                cover.setImageResource(b.wallpapers[0])
+                mockupWp.setImageResource(b.wallpapers[0])
             } else {
-                cover.visibility = View.GONE
+                mockupWp.setBackgroundColor(0xFF201F29.toInt())
+            }
+            val mockupIcons = card.findViewById<GridLayout>(R.id.card_mockup_icons)
+            mockupIcons.removeAllViews()
+            for (icon in b.icons.take(4)) {
+                val iv = ImageView(this).apply {
+                    setImageResource(icon.resId)
+                    layoutParams = GridLayout.LayoutParams().apply {
+                        width = dp(30); height = dp(30)
+                        setMargins(dp(3), dp(3), dp(3), dp(3))
+                    }
+                }
+                mockupIcons.addView(iv)
             }
             val counts = card.findViewById<TextView>(R.id.card_counts)
             counts.text = if (b.wallpapers.isEmpty() && b.icons.isEmpty()) {
@@ -211,6 +259,18 @@ class MainActivity : Activity() {
     private fun buildWallpapersTab() {
         val container = findViewById<LinearLayout>(R.id.wallpapers_list)
         container.removeAllViews()
+        // Favorites shelf first (the "mine" collection).
+        val favs = FavoritesManager.all(this)
+        if (favs.isNotEmpty()) {
+            container.addView(TextView(this).apply {
+                text = "❤ Favorites"
+                textSize = 17f
+                setTypeface(typeface, Typeface.BOLD)
+                setTextColor(getColor(R.color.text))
+                setPadding(0, 0, 0, dp(10))
+            })
+            container.addView(wallpaperGrid(favs))
+        }
         for (b in BundleRepository.bundles) {
             container.addView(sectionHeader(b, "wallpapers"))
             when {
@@ -220,28 +280,56 @@ class MainActivity : Activity() {
                 b.wallpapers.isEmpty() -> {
                     container.addView(comingSoonView("Wallpapers arriving in the next drop."))
                 }
-                else -> {
-                    val grid = GridLayout(this).apply { columnCount = 2 }
-                    for (resId in b.wallpapers) {
-                        val iv = ImageView(this).apply {
-                            setImageResource(resId)
-                            scaleType = ImageView.ScaleType.CENTER_CROP
-                            layoutParams = GridLayout.LayoutParams().apply {
-                                width = 0
-                                height = dp(210)
-                                columnSpec = GridLayout.spec(GridLayout.UNDEFINED, 1f)
-                                setMargins(dp(6), dp(6), dp(6), dp(6))
-                            }
-                            isClickable = true
-                            isFocusable = true
-                            setOnClickListener { openPreview(resId) }
-                        }
-                        grid.addView(iv)
-                    }
-                    container.addView(grid)
-                }
+                else -> container.addView(wallpaperGrid(b.wallpapers))
             }
         }
+    }
+
+    /** 2-column wallpaper grid; each cell has a heart overlay. */
+    private fun wallpaperGrid(ids: List<Int>): GridLayout {
+        val grid = GridLayout(this).apply { columnCount = 2 }
+        for ((idx, resId) in ids.withIndex()) {
+            val cell = FrameLayout(this).apply {
+                layoutParams = GridLayout.LayoutParams().apply {
+                    width = 0
+                    height = dp(210)
+                    columnSpec = GridLayout.spec(GridLayout.UNDEFINED, 1f)
+                    setMargins(dp(6), dp(6), dp(6), dp(6))
+                }
+                isClickable = true
+                isFocusable = true
+                setOnClickListener { openPreview(ids, idx) }
+            }
+            val iv = ImageView(this).apply {
+                setImageResource(resId)
+                scaleType = ImageView.ScaleType.CENTER_CROP
+                layoutParams = FrameLayout.LayoutParams(
+                    FrameLayout.LayoutParams.MATCH_PARENT,
+                    FrameLayout.LayoutParams.MATCH_PARENT
+                )
+            }
+            cell.addView(iv)
+            val heart = TextView(this).apply {
+                text = if (FavoritesManager.isFavorite(this@MainActivity, resId)) "❤" else "🤍"
+                textSize = 20f
+                setPadding(dp(8), dp(8), dp(8), dp(8))
+                layoutParams = FrameLayout.LayoutParams(
+                    FrameLayout.LayoutParams.WRAP_CONTENT,
+                    FrameLayout.LayoutParams.WRAP_CONTENT,
+                    Gravity.TOP or Gravity.END
+                )
+                isClickable = true
+                setOnClickListener {
+                    val nowFav = FavoritesManager.toggle(this@MainActivity, resId)
+                    text = if (nowFav) "❤" else "🤍"
+                    // Refresh the shelf (add/remove) without rebuilding everything.
+                    buildWallpapersTab()
+                }
+            }
+            cell.addView(heart)
+            grid.addView(cell)
+        }
+        return grid
     }
 
     // ---------- Widgets tab ----------
@@ -249,40 +337,19 @@ class MainActivity : Activity() {
     private fun buildWidgetsTab() {
         val container = findViewById<LinearLayout>(R.id.widgets_list)
         container.removeAllViews()
-        val items = listOf(
-            Triple("Rizglow Clock", "Live clock + date in your bundle style.", 0xFFB388FF.toInt()),
-            Triple("Rizglow Battery", "Battery level with tap-to-refresh, in your bundle style.", 0xFFF5A8C0.toInt()),
-            Triple("Rizglow Date", "Big day + date in your bundle style.", 0xFF7C6CFF.toInt())
-        )
-        for ((name, desc, accent) in items) {
-            val card = LinearLayout(this).apply {
-                orientation = LinearLayout.VERTICAL
-                setPadding(dp(16), dp(14), dp(16), dp(14))
-                background = GradientDrawable().apply {
-                    shape = GradientDrawable.RECTANGLE
-                    cornerRadius = dp(16).toFloat()
-                    setColor(getColor(R.color.surface))
-                    setStroke(dp(1), accent)
-                }
-                layoutParams = LinearLayout.LayoutParams(
-                    LinearLayout.LayoutParams.MATCH_PARENT,
-                    LinearLayout.LayoutParams.WRAP_CONTENT
-                ).apply { bottomMargin = dp(12) }
-            }
-            card.addView(TextView(this).apply {
-                text = name
-                textSize = 17f
-                setTypeface(typeface, Typeface.BOLD)
-                setTextColor(accent)
-            })
-            card.addView(TextView(this).apply {
-                text = desc
-                textSize = 13f
-                setTextColor(getColor(R.color.muted))
-                setPadding(0, dp(4), 0, 0)
-            })
-            container.addView(card)
-        }
+        // Visual preview cards: live mini-render of each widget.
+        container.addView(widgetCard(
+            "Rizglow Clock", "Live clock + date in your bundle style.",
+            0xFFB388FF.toInt(), widgetPreviewClock(0xFFB388FF.toInt())
+        ))
+        container.addView(widgetCard(
+            "Rizglow Battery", "Battery level with tap-to-refresh, in your bundle style.",
+            0xFFF5A8C0.toInt(), widgetPreviewBattery(0xFFF5A8C0.toInt())
+        ))
+        container.addView(widgetCard(
+            "Rizglow Date", "Big day + date in your bundle style.",
+            0xFF7C6CFF.toInt(), widgetPreviewDate(0xFF7C6CFF.toInt())
+        ))
         container.addView(TextView(this).apply {
             text = "To add: long-press your home screen → Widgets → choose a Rizglow widget → pick a bundle style."
             textSize = 13f
@@ -291,11 +358,135 @@ class MainActivity : Activity() {
         })
     }
 
+    private fun widgetCard(
+        name: String, desc: String, accent: Int, preview: View
+    ): LinearLayout {
+        val card = LinearLayout(this).apply {
+            orientation = LinearLayout.HORIZONTAL
+            gravity = Gravity.CENTER_VERTICAL
+            setPadding(dp(16), dp(14), dp(16), dp(14))
+            background = GradientDrawable().apply {
+                shape = GradientDrawable.RECTANGLE
+                cornerRadius = dp(16).toFloat()
+                setColor(getColor(R.color.surface))
+                setStroke(dp(1), accent)
+            }
+            layoutParams = LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.MATCH_PARENT,
+                LinearLayout.LayoutParams.WRAP_CONTENT
+            ).apply { bottomMargin = dp(12) }
+        }
+        val previewBox = FrameLayout(this).apply {
+            layoutParams = LinearLayout.LayoutParams(dp(96), dp(96)).apply {
+                marginEnd = dp(14)
+            }
+            background = GradientDrawable().apply {
+                shape = GradientDrawable.RECTANGLE
+                cornerRadius = dp(12).toFloat()
+                setColor(getColor(R.color.surface2))
+            }
+            addView(preview)
+        }
+        card.addView(previewBox)
+        val info = LinearLayout(this).apply {
+            orientation = LinearLayout.VERTICAL
+            layoutParams = LinearLayout.LayoutParams(0,
+                LinearLayout.LayoutParams.WRAP_CONTENT, 1f)
+        }
+        info.addView(TextView(this).apply {
+            text = name
+            textSize = 17f
+            setTypeface(typeface, Typeface.BOLD)
+            setTextColor(accent)
+        })
+        info.addView(TextView(this).apply {
+            text = desc
+            textSize = 13f
+            setTextColor(getColor(R.color.muted))
+            setPadding(0, dp(4), 0, 0)
+        })
+        card.addView(info)
+        return card
+    }
+
+    private fun widgetPreviewClock(accent: Int): TextView {
+        val cal = java.util.Calendar.getInstance()
+        val hh = cal.get(java.util.Calendar.HOUR_OF_DAY).toString().padStart(2, '0')
+        val mm = cal.get(java.util.Calendar.MINUTE).toString().padStart(2, '0')
+        return TextView(this).apply {
+            text = "$hh:$mm"
+            textSize = 24f
+            setTypeface(typeface, Typeface.BOLD)
+            setTextColor(accent)
+            gravity = Gravity.CENTER
+            layoutParams = FrameLayout.LayoutParams(
+                FrameLayout.LayoutParams.MATCH_PARENT,
+                FrameLayout.LayoutParams.MATCH_PARENT
+            )
+        }
+    }
+
+    private fun widgetPreviewBattery(accent: Int): TextView {
+        val bm = getSystemService(BATTERY_SERVICE) as android.os.BatteryManager
+        val pct = bm.getIntProperty(android.os.BatteryManager.BATTERY_PROPERTY_CAPACITY)
+        return TextView(this).apply {
+            text = "🔋$pct%"
+            textSize = 20f
+            setTypeface(typeface, Typeface.BOLD)
+            setTextColor(accent)
+            gravity = Gravity.CENTER
+            layoutParams = FrameLayout.LayoutParams(
+                FrameLayout.LayoutParams.MATCH_PARENT,
+                FrameLayout.LayoutParams.MATCH_PARENT
+            )
+        }
+    }
+
+    private fun widgetPreviewDate(accent: Int): TextView {
+        val day = java.text.SimpleDateFormat("EEE", java.util.Locale.getDefault())
+            .format(java.util.Date())
+        val date = java.text.SimpleDateFormat("MMM d", java.util.Locale.getDefault())
+            .format(java.util.Date())
+        return TextView(this).apply {
+            text = "$day\n$date"
+            textSize = 18f
+            setTypeface(typeface, Typeface.BOLD)
+            setTextColor(accent)
+            gravity = Gravity.CENTER
+            layoutParams = FrameLayout.LayoutParams(
+                FrameLayout.LayoutParams.MATCH_PARENT,
+                FrameLayout.LayoutParams.MATCH_PARENT
+            )
+        }
+    }
+
     // ---------- Icons tab: per-bundle sets ----------
 
     private fun buildIconsTab() {
         val container = findViewById<LinearLayout>(R.id.icons_list)
         container.removeAllViews()
+        // Launcher banner: tailored guidance (CandyBar pattern).
+        val launchers = LauncherDetector.installed(this)
+        val banner = TextView(this).apply {
+            text = if (launchers.isNotEmpty()) {
+                "✓ ${launchers.joinToString(", ")} detected — apply the Rizglow icon pack there for the full themed look."
+            } else {
+                "Tip: install a free launcher like Lawnchair, then apply the Rizglow icon pack for a fully themed home screen."
+            }
+            textSize = 13f
+            setTextColor(getColor(R.color.text))
+            background = GradientDrawable().apply {
+                shape = GradientDrawable.RECTANGLE
+                cornerRadius = dp(12).toFloat()
+                setColor(getColor(R.color.surface2))
+            }
+            setPadding(dp(14), dp(12), dp(14), dp(12))
+            layoutParams = LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.MATCH_PARENT,
+                LinearLayout.LayoutParams.WRAP_CONTENT
+            ).apply { bottomMargin = dp(14) }
+        }
+        container.addView(banner)
         for (b in BundleRepository.bundles) {
             container.addView(sectionHeader(b, "icons"))
             when {
@@ -394,11 +585,17 @@ class MainActivity : Activity() {
         }
     }
 
-    private fun openPreview(resId: Int) {
+    private fun openPreview(ids: List<Int>, index: Int) {
         startActivity(
             Intent(this, WallpaperPreviewActivity::class.java)
-                .putExtra(WallpaperPreviewActivity.EXTRA_RES_ID, resId)
+                .putExtra(WallpaperPreviewActivity.EXTRA_RES_IDS, ids.toIntArray())
+                .putExtra(WallpaperPreviewActivity.EXTRA_INDEX, index)
         )
+    }
+
+    /** Legacy single-wallpaper entry (kept for safety). */
+    private fun openPreview(resId: Int) {
+        openPreview(listOf(resId), 0)
     }
 
     private fun showIconDialog(bundleId: String, icon: IconItem) {
