@@ -184,7 +184,19 @@ object BundleRepository {
         IconItem(R.drawable.ic_ws_video, "Video"),
         IconItem(R.drawable.ic_ws_play, "Play"),
         IconItem(R.drawable.ic_ws_saved, "Saved"),
-        IconItem(R.drawable.ic_ws_trash, "Trash")
+        IconItem(R.drawable.ic_ws_trash, "Trash"),
+        IconItem(R.drawable.ic_ws_whatsapp, "WhatsApp"),
+        IconItem(R.drawable.ic_ws_instagram, "Instagram"),
+        IconItem(R.drawable.ic_ws_tiktok, "TikTok"),
+        IconItem(R.drawable.ic_ws_facebook, "Facebook"),
+        IconItem(R.drawable.ic_ws_x, "X"),
+        IconItem(R.drawable.ic_ws_snapchat, "Snapchat"),
+        IconItem(R.drawable.ic_ws_pinterest, "Pinterest"),
+        IconItem(R.drawable.ic_ws_telegram, "Telegram"),
+        IconItem(R.drawable.ic_ws_youtube, "YouTube"),
+        IconItem(R.drawable.ic_ws_spotify, "Spotify"),
+        IconItem(R.drawable.ic_ws_discord, "Discord"),
+        IconItem(R.drawable.ic_ws_reddit, "Reddit")
     )
 
     private val ntWallpapers = listOf(
@@ -228,7 +240,19 @@ object BundleRepository {
         IconItem(R.drawable.ic_nt_video, "Video"),
         IconItem(R.drawable.ic_nt_play, "Play"),
         IconItem(R.drawable.ic_nt_saved, "Saved"),
-        IconItem(R.drawable.ic_nt_trash, "Trash")
+        IconItem(R.drawable.ic_nt_trash, "Trash"),
+        IconItem(R.drawable.ic_nt_whatsapp, "WhatsApp"),
+        IconItem(R.drawable.ic_nt_instagram, "Instagram"),
+        IconItem(R.drawable.ic_nt_tiktok, "TikTok"),
+        IconItem(R.drawable.ic_nt_facebook, "Facebook"),
+        IconItem(R.drawable.ic_nt_x, "X"),
+        IconItem(R.drawable.ic_nt_snapchat, "Snapchat"),
+        IconItem(R.drawable.ic_nt_pinterest, "Pinterest"),
+        IconItem(R.drawable.ic_nt_telegram, "Telegram"),
+        IconItem(R.drawable.ic_nt_youtube, "YouTube"),
+        IconItem(R.drawable.ic_nt_spotify, "Spotify"),
+        IconItem(R.drawable.ic_nt_discord, "Discord"),
+        IconItem(R.drawable.ic_nt_reddit, "Reddit")
     )
 
     private val cbWallpapers = listOf(
@@ -272,7 +296,19 @@ object BundleRepository {
         IconItem(R.drawable.ic_cb_video, "Video"),
         IconItem(R.drawable.ic_cb_play, "Play"),
         IconItem(R.drawable.ic_cb_saved, "Saved"),
-        IconItem(R.drawable.ic_cb_trash, "Trash")
+        IconItem(R.drawable.ic_cb_trash, "Trash"),
+        IconItem(R.drawable.ic_cb_whatsapp, "WhatsApp"),
+        IconItem(R.drawable.ic_cb_instagram, "Instagram"),
+        IconItem(R.drawable.ic_cb_tiktok, "TikTok"),
+        IconItem(R.drawable.ic_cb_facebook, "Facebook"),
+        IconItem(R.drawable.ic_cb_x, "X"),
+        IconItem(R.drawable.ic_cb_snapchat, "Snapchat"),
+        IconItem(R.drawable.ic_cb_pinterest, "Pinterest"),
+        IconItem(R.drawable.ic_cb_telegram, "Telegram"),
+        IconItem(R.drawable.ic_cb_youtube, "YouTube"),
+        IconItem(R.drawable.ic_cb_spotify, "Spotify"),
+        IconItem(R.drawable.ic_cb_discord, "Discord"),
+        IconItem(R.drawable.ic_cb_reddit, "Reddit")
     )
 
     private val spWallpapers = listOf(
@@ -316,7 +352,19 @@ object BundleRepository {
         IconItem(R.drawable.ic_sp_video, "Video"),
         IconItem(R.drawable.ic_sp_play, "Play"),
         IconItem(R.drawable.ic_sp_saved, "Saved"),
-        IconItem(R.drawable.ic_sp_trash, "Trash")
+        IconItem(R.drawable.ic_sp_trash, "Trash"),
+        IconItem(R.drawable.ic_sp_whatsapp, "WhatsApp"),
+        IconItem(R.drawable.ic_sp_instagram, "Instagram"),
+        IconItem(R.drawable.ic_sp_tiktok, "TikTok"),
+        IconItem(R.drawable.ic_sp_facebook, "Facebook"),
+        IconItem(R.drawable.ic_sp_x, "X"),
+        IconItem(R.drawable.ic_sp_snapchat, "Snapchat"),
+        IconItem(R.drawable.ic_sp_pinterest, "Pinterest"),
+        IconItem(R.drawable.ic_sp_telegram, "Telegram"),
+        IconItem(R.drawable.ic_sp_youtube, "YouTube"),
+        IconItem(R.drawable.ic_sp_spotify, "Spotify"),
+        IconItem(R.drawable.ic_sp_discord, "Discord"),
+        IconItem(R.drawable.ic_sp_reddit, "Reddit")
     )
 
     private val maWallpapers = listOf(
@@ -360,7 +408,19 @@ object BundleRepository {
         IconItem(R.drawable.ic_ma_video, "Video"),
         IconItem(R.drawable.ic_ma_play, "Play"),
         IconItem(R.drawable.ic_ma_saved, "Saved"),
-        IconItem(R.drawable.ic_ma_trash, "Trash")
+        IconItem(R.drawable.ic_ma_trash, "Trash"),
+        IconItem(R.drawable.ic_ma_whatsapp, "WhatsApp"),
+        IconItem(R.drawable.ic_ma_instagram, "Instagram"),
+        IconItem(R.drawable.ic_ma_tiktok, "TikTok"),
+        IconItem(R.drawable.ic_ma_facebook, "Facebook"),
+        IconItem(R.drawable.ic_ma_x, "X"),
+        IconItem(R.drawable.ic_ma_snapchat, "Snapchat"),
+        IconItem(R.drawable.ic_ma_pinterest, "Pinterest"),
+        IconItem(R.drawable.ic_ma_telegram, "Telegram"),
+        IconItem(R.drawable.ic_ma_youtube, "YouTube"),
+        IconItem(R.drawable.ic_ma_spotify, "Spotify"),
+        IconItem(R.drawable.ic_ma_discord, "Discord"),
+        IconItem(R.drawable.ic_ma_reddit, "Reddit")
     )
 
     private val mdWallpapers = listOf(
@@ -404,7 +464,19 @@ object BundleRepository {
         IconItem(R.drawable.ic_md_video, "Video"),
         IconItem(R.drawable.ic_md_play, "Play"),
         IconItem(R.drawable.ic_md_saved, "Saved"),
-        IconItem(R.drawable.ic_md_trash, "Trash")
+        IconItem(R.drawable.ic_md_trash, "Trash"),
+        IconItem(R.drawable.ic_md_whatsapp, "WhatsApp"),
+        IconItem(R.drawable.ic_md_instagram, "Instagram"),
+        IconItem(R.drawable.ic_md_tiktok, "TikTok"),
+        IconItem(R.drawable.ic_md_facebook, "Facebook"),
+        IconItem(R.drawable.ic_md_x, "X"),
+        IconItem(R.drawable.ic_md_snapchat, "Snapchat"),
+        IconItem(R.drawable.ic_md_pinterest, "Pinterest"),
+        IconItem(R.drawable.ic_md_telegram, "Telegram"),
+        IconItem(R.drawable.ic_md_youtube, "YouTube"),
+        IconItem(R.drawable.ic_md_spotify, "Spotify"),
+        IconItem(R.drawable.ic_md_discord, "Discord"),
+        IconItem(R.drawable.ic_md_reddit, "Reddit")
     )
 
     private val gpWallpapers = listOf(
@@ -448,7 +520,19 @@ object BundleRepository {
         IconItem(R.drawable.ic_gp_video, "Video"),
         IconItem(R.drawable.ic_gp_play, "Play"),
         IconItem(R.drawable.ic_gp_saved, "Saved"),
-        IconItem(R.drawable.ic_gp_trash, "Trash")
+        IconItem(R.drawable.ic_gp_trash, "Trash"),
+        IconItem(R.drawable.ic_gp_whatsapp, "WhatsApp"),
+        IconItem(R.drawable.ic_gp_instagram, "Instagram"),
+        IconItem(R.drawable.ic_gp_tiktok, "TikTok"),
+        IconItem(R.drawable.ic_gp_facebook, "Facebook"),
+        IconItem(R.drawable.ic_gp_x, "X"),
+        IconItem(R.drawable.ic_gp_snapchat, "Snapchat"),
+        IconItem(R.drawable.ic_gp_pinterest, "Pinterest"),
+        IconItem(R.drawable.ic_gp_telegram, "Telegram"),
+        IconItem(R.drawable.ic_gp_youtube, "YouTube"),
+        IconItem(R.drawable.ic_gp_spotify, "Spotify"),
+        IconItem(R.drawable.ic_gp_discord, "Discord"),
+        IconItem(R.drawable.ic_gp_reddit, "Reddit")
     )
 
     val bundles: List<RizBundle> = listOf(
