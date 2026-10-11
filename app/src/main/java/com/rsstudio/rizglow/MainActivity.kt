@@ -17,6 +17,7 @@ import android.view.Gravity
 import android.view.GestureDetector
 import android.view.MotionEvent
 import android.view.View
+import android.view.ViewOutlineProvider
 import android.view.LayoutInflater
 import android.widget.GridLayout
 import android.widget.ImageView
@@ -135,9 +136,10 @@ class MainActivity : Activity() {
             setPadding(dp(16), dp(14), dp(16), dp(14))
             background = GradientDrawable().apply {
                 shape = GradientDrawable.RECTANGLE
-                cornerRadius = dp(16).toFloat()
-                setColor(getColor(R.color.surface))
-                setStroke(dp(2), 0xFFB388FF.toInt())
+                cornerRadius = dp(20).toFloat()
+                colors = intArrayOf(0xFF2A1F3D.toInt(), 0xFF17161E.toInt())
+                orientation = GradientDrawable.Orientation.TL_BR
+                setStroke(dp(1), 0x40B388FF.toInt())
             }
             layoutParams = LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.MATCH_PARENT,
@@ -164,8 +166,18 @@ class MainActivity : Activity() {
         val inflater = LayoutInflater.from(this)
         for (b in BundleRepository.bundles) {
             val card = inflater.inflate(R.layout.item_bundle, container, false)
+            // Clip cover art to the card's rounded corners.
+            card.clipToOutline = true
+            card.outlineProvider = ViewOutlineProvider.BACKGROUND
             card.findViewById<TextView>(R.id.card_name).text = b.name
             card.findViewById<TextView>(R.id.card_tagline).text = b.tagline
+            // Cover art: first wallpaper, or hide the ImageView if none.
+            val cover = card.findViewById<ImageView>(R.id.card_cover)
+            if (b.wallpapers.isNotEmpty()) {
+                cover.setImageResource(b.wallpapers[0])
+            } else {
+                cover.visibility = View.GONE
+            }
             val counts = card.findViewById<TextView>(R.id.card_counts)
             counts.text = if (b.wallpapers.isEmpty() && b.icons.isEmpty()) {
                 "Coming soon"
