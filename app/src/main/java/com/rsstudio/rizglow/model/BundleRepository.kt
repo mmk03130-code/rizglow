@@ -2,7 +2,7 @@ package com.rsstudio.rizglow.model
 
 import com.rsstudio.rizglow.R
 
-/** Bundle catalog. All three launch bundles ship with full artwork. */
+/** Bundle catalog. All bundles ship with full artwork (3 launch + 7 library). */
 object BundleRepository {
 
     private val mvWallpapers = listOf(
@@ -140,6 +140,317 @@ object BundleRepository {
         IconItem(R.drawable.ic_nd_google, "Google")
     )
 
+
+    // ---------- New library bundles (v3.0) ----------
+
+    private val wsWallpapers = listOf(
+        R.drawable.wp_ws_1,
+        R.drawable.wp_ws_2,
+        R.drawable.wp_ws_3,
+        R.drawable.wp_ws_4,
+        R.drawable.wp_ws_5,
+        R.drawable.wp_ws_6
+    )
+    private val wsIcons = listOf(
+        IconItem(R.drawable.ic_ws_phone, "Phone"),
+        IconItem(R.drawable.ic_ws_messages, "Messages"),
+        IconItem(R.drawable.ic_ws_camera, "Camera"),
+        IconItem(R.drawable.ic_ws_photos, "Photos"),
+        IconItem(R.drawable.ic_ws_music, "Music"),
+        IconItem(R.drawable.ic_ws_maps, "Maps"),
+        IconItem(R.drawable.ic_ws_browser, "Browser"),
+        IconItem(R.drawable.ic_ws_gmail, "Gmail"),
+        IconItem(R.drawable.ic_ws_contacts, "Contacts"),
+        IconItem(R.drawable.ic_ws_calculator, "Calculator"),
+        IconItem(R.drawable.ic_ws_clock, "Clock"),
+        IconItem(R.drawable.ic_ws_calendar, "Calendar"),
+        IconItem(R.drawable.ic_ws_weather, "Weather"),
+        IconItem(R.drawable.ic_ws_notes, "Notes"),
+        IconItem(R.drawable.ic_ws_files, "Files"),
+        IconItem(R.drawable.ic_ws_favorites, "Favorites"),
+        IconItem(R.drawable.ic_ws_star, "Star"),
+        IconItem(R.drawable.ic_ws_alerts, "Alerts"),
+        IconItem(R.drawable.ic_ws_search, "Search"),
+        IconItem(R.drawable.ic_ws_settings, "Settings"),
+        IconItem(R.drawable.ic_ws_wifi, "WiFi"),
+        IconItem(R.drawable.ic_ws_bluetooth, "Bluetooth"),
+        IconItem(R.drawable.ic_ws_battery, "Battery"),
+        IconItem(R.drawable.ic_ws_sun, "Sun"),
+        IconItem(R.drawable.ic_ws_compass, "Compass"),
+        IconItem(R.drawable.ic_ws_navigation, "Navigation"),
+        IconItem(R.drawable.ic_ws_shop, "Shop"),
+        IconItem(R.drawable.ic_ws_wallet, "Wallet"),
+        IconItem(R.drawable.ic_ws_mic, "Mic"),
+        IconItem(R.drawable.ic_ws_video, "Video"),
+        IconItem(R.drawable.ic_ws_play, "Play"),
+        IconItem(R.drawable.ic_ws_saved, "Saved"),
+        IconItem(R.drawable.ic_ws_trash, "Trash")
+    )
+
+    private val ntWallpapers = listOf(
+        R.drawable.wp_nt_1,
+        R.drawable.wp_nt_2,
+        R.drawable.wp_nt_3,
+        R.drawable.wp_nt_4,
+        R.drawable.wp_nt_5,
+        R.drawable.wp_nt_6
+    )
+    private val ntIcons = listOf(
+        IconItem(R.drawable.ic_nt_phone, "Phone"),
+        IconItem(R.drawable.ic_nt_messages, "Messages"),
+        IconItem(R.drawable.ic_nt_camera, "Camera"),
+        IconItem(R.drawable.ic_nt_photos, "Photos"),
+        IconItem(R.drawable.ic_nt_music, "Music"),
+        IconItem(R.drawable.ic_nt_maps, "Maps"),
+        IconItem(R.drawable.ic_nt_browser, "Browser"),
+        IconItem(R.drawable.ic_nt_gmail, "Gmail"),
+        IconItem(R.drawable.ic_nt_contacts, "Contacts"),
+        IconItem(R.drawable.ic_nt_calculator, "Calculator"),
+        IconItem(R.drawable.ic_nt_clock, "Clock"),
+        IconItem(R.drawable.ic_nt_calendar, "Calendar"),
+        IconItem(R.drawable.ic_nt_weather, "Weather"),
+        IconItem(R.drawable.ic_nt_notes, "Notes"),
+        IconItem(R.drawable.ic_nt_files, "Files"),
+        IconItem(R.drawable.ic_nt_favorites, "Favorites"),
+        IconItem(R.drawable.ic_nt_star, "Star"),
+        IconItem(R.drawable.ic_nt_alerts, "Alerts"),
+        IconItem(R.drawable.ic_nt_search, "Search"),
+        IconItem(R.drawable.ic_nt_settings, "Settings"),
+        IconItem(R.drawable.ic_nt_wifi, "WiFi"),
+        IconItem(R.drawable.ic_nt_bluetooth, "Bluetooth"),
+        IconItem(R.drawable.ic_nt_battery, "Battery"),
+        IconItem(R.drawable.ic_nt_sun, "Sun"),
+        IconItem(R.drawable.ic_nt_compass, "Compass"),
+        IconItem(R.drawable.ic_nt_navigation, "Navigation"),
+        IconItem(R.drawable.ic_nt_shop, "Shop"),
+        IconItem(R.drawable.ic_nt_wallet, "Wallet"),
+        IconItem(R.drawable.ic_nt_mic, "Mic"),
+        IconItem(R.drawable.ic_nt_video, "Video"),
+        IconItem(R.drawable.ic_nt_play, "Play"),
+        IconItem(R.drawable.ic_nt_saved, "Saved"),
+        IconItem(R.drawable.ic_nt_trash, "Trash")
+    )
+
+    private val cbWallpapers = listOf(
+        R.drawable.wp_cb_1,
+        R.drawable.wp_cb_2,
+        R.drawable.wp_cb_3,
+        R.drawable.wp_cb_4,
+        R.drawable.wp_cb_5,
+        R.drawable.wp_cb_6
+    )
+    private val cbIcons = listOf(
+        IconItem(R.drawable.ic_cb_phone, "Phone"),
+        IconItem(R.drawable.ic_cb_messages, "Messages"),
+        IconItem(R.drawable.ic_cb_camera, "Camera"),
+        IconItem(R.drawable.ic_cb_photos, "Photos"),
+        IconItem(R.drawable.ic_cb_music, "Music"),
+        IconItem(R.drawable.ic_cb_maps, "Maps"),
+        IconItem(R.drawable.ic_cb_browser, "Browser"),
+        IconItem(R.drawable.ic_cb_gmail, "Gmail"),
+        IconItem(R.drawable.ic_cb_contacts, "Contacts"),
+        IconItem(R.drawable.ic_cb_calculator, "Calculator"),
+        IconItem(R.drawable.ic_cb_clock, "Clock"),
+        IconItem(R.drawable.ic_cb_calendar, "Calendar"),
+        IconItem(R.drawable.ic_cb_weather, "Weather"),
+        IconItem(R.drawable.ic_cb_notes, "Notes"),
+        IconItem(R.drawable.ic_cb_files, "Files"),
+        IconItem(R.drawable.ic_cb_favorites, "Favorites"),
+        IconItem(R.drawable.ic_cb_star, "Star"),
+        IconItem(R.drawable.ic_cb_alerts, "Alerts"),
+        IconItem(R.drawable.ic_cb_search, "Search"),
+        IconItem(R.drawable.ic_cb_settings, "Settings"),
+        IconItem(R.drawable.ic_cb_wifi, "WiFi"),
+        IconItem(R.drawable.ic_cb_bluetooth, "Bluetooth"),
+        IconItem(R.drawable.ic_cb_battery, "Battery"),
+        IconItem(R.drawable.ic_cb_sun, "Sun"),
+        IconItem(R.drawable.ic_cb_compass, "Compass"),
+        IconItem(R.drawable.ic_cb_navigation, "Navigation"),
+        IconItem(R.drawable.ic_cb_shop, "Shop"),
+        IconItem(R.drawable.ic_cb_wallet, "Wallet"),
+        IconItem(R.drawable.ic_cb_mic, "Mic"),
+        IconItem(R.drawable.ic_cb_video, "Video"),
+        IconItem(R.drawable.ic_cb_play, "Play"),
+        IconItem(R.drawable.ic_cb_saved, "Saved"),
+        IconItem(R.drawable.ic_cb_trash, "Trash")
+    )
+
+    private val spWallpapers = listOf(
+        R.drawable.wp_sp_1,
+        R.drawable.wp_sp_2,
+        R.drawable.wp_sp_3,
+        R.drawable.wp_sp_4,
+        R.drawable.wp_sp_5,
+        R.drawable.wp_sp_6
+    )
+    private val spIcons = listOf(
+        IconItem(R.drawable.ic_sp_phone, "Phone"),
+        IconItem(R.drawable.ic_sp_messages, "Messages"),
+        IconItem(R.drawable.ic_sp_camera, "Camera"),
+        IconItem(R.drawable.ic_sp_photos, "Photos"),
+        IconItem(R.drawable.ic_sp_music, "Music"),
+        IconItem(R.drawable.ic_sp_maps, "Maps"),
+        IconItem(R.drawable.ic_sp_browser, "Browser"),
+        IconItem(R.drawable.ic_sp_gmail, "Gmail"),
+        IconItem(R.drawable.ic_sp_contacts, "Contacts"),
+        IconItem(R.drawable.ic_sp_calculator, "Calculator"),
+        IconItem(R.drawable.ic_sp_clock, "Clock"),
+        IconItem(R.drawable.ic_sp_calendar, "Calendar"),
+        IconItem(R.drawable.ic_sp_weather, "Weather"),
+        IconItem(R.drawable.ic_sp_notes, "Notes"),
+        IconItem(R.drawable.ic_sp_files, "Files"),
+        IconItem(R.drawable.ic_sp_favorites, "Favorites"),
+        IconItem(R.drawable.ic_sp_star, "Star"),
+        IconItem(R.drawable.ic_sp_alerts, "Alerts"),
+        IconItem(R.drawable.ic_sp_search, "Search"),
+        IconItem(R.drawable.ic_sp_settings, "Settings"),
+        IconItem(R.drawable.ic_sp_wifi, "WiFi"),
+        IconItem(R.drawable.ic_sp_bluetooth, "Bluetooth"),
+        IconItem(R.drawable.ic_sp_battery, "Battery"),
+        IconItem(R.drawable.ic_sp_sun, "Sun"),
+        IconItem(R.drawable.ic_sp_compass, "Compass"),
+        IconItem(R.drawable.ic_sp_navigation, "Navigation"),
+        IconItem(R.drawable.ic_sp_shop, "Shop"),
+        IconItem(R.drawable.ic_sp_wallet, "Wallet"),
+        IconItem(R.drawable.ic_sp_mic, "Mic"),
+        IconItem(R.drawable.ic_sp_video, "Video"),
+        IconItem(R.drawable.ic_sp_play, "Play"),
+        IconItem(R.drawable.ic_sp_saved, "Saved"),
+        IconItem(R.drawable.ic_sp_trash, "Trash")
+    )
+
+    private val maWallpapers = listOf(
+        R.drawable.wp_ma_1,
+        R.drawable.wp_ma_2,
+        R.drawable.wp_ma_3,
+        R.drawable.wp_ma_4,
+        R.drawable.wp_ma_5,
+        R.drawable.wp_ma_6
+    )
+    private val maIcons = listOf(
+        IconItem(R.drawable.ic_ma_phone, "Phone"),
+        IconItem(R.drawable.ic_ma_messages, "Messages"),
+        IconItem(R.drawable.ic_ma_camera, "Camera"),
+        IconItem(R.drawable.ic_ma_photos, "Photos"),
+        IconItem(R.drawable.ic_ma_music, "Music"),
+        IconItem(R.drawable.ic_ma_maps, "Maps"),
+        IconItem(R.drawable.ic_ma_browser, "Browser"),
+        IconItem(R.drawable.ic_ma_gmail, "Gmail"),
+        IconItem(R.drawable.ic_ma_contacts, "Contacts"),
+        IconItem(R.drawable.ic_ma_calculator, "Calculator"),
+        IconItem(R.drawable.ic_ma_clock, "Clock"),
+        IconItem(R.drawable.ic_ma_calendar, "Calendar"),
+        IconItem(R.drawable.ic_ma_weather, "Weather"),
+        IconItem(R.drawable.ic_ma_notes, "Notes"),
+        IconItem(R.drawable.ic_ma_files, "Files"),
+        IconItem(R.drawable.ic_ma_favorites, "Favorites"),
+        IconItem(R.drawable.ic_ma_star, "Star"),
+        IconItem(R.drawable.ic_ma_alerts, "Alerts"),
+        IconItem(R.drawable.ic_ma_search, "Search"),
+        IconItem(R.drawable.ic_ma_settings, "Settings"),
+        IconItem(R.drawable.ic_ma_wifi, "WiFi"),
+        IconItem(R.drawable.ic_ma_bluetooth, "Bluetooth"),
+        IconItem(R.drawable.ic_ma_battery, "Battery"),
+        IconItem(R.drawable.ic_ma_sun, "Sun"),
+        IconItem(R.drawable.ic_ma_compass, "Compass"),
+        IconItem(R.drawable.ic_ma_navigation, "Navigation"),
+        IconItem(R.drawable.ic_ma_shop, "Shop"),
+        IconItem(R.drawable.ic_ma_wallet, "Wallet"),
+        IconItem(R.drawable.ic_ma_mic, "Mic"),
+        IconItem(R.drawable.ic_ma_video, "Video"),
+        IconItem(R.drawable.ic_ma_play, "Play"),
+        IconItem(R.drawable.ic_ma_saved, "Saved"),
+        IconItem(R.drawable.ic_ma_trash, "Trash")
+    )
+
+    private val mdWallpapers = listOf(
+        R.drawable.wp_md_1,
+        R.drawable.wp_md_2,
+        R.drawable.wp_md_3,
+        R.drawable.wp_md_4,
+        R.drawable.wp_md_5,
+        R.drawable.wp_md_6
+    )
+    private val mdIcons = listOf(
+        IconItem(R.drawable.ic_md_phone, "Phone"),
+        IconItem(R.drawable.ic_md_messages, "Messages"),
+        IconItem(R.drawable.ic_md_camera, "Camera"),
+        IconItem(R.drawable.ic_md_photos, "Photos"),
+        IconItem(R.drawable.ic_md_music, "Music"),
+        IconItem(R.drawable.ic_md_maps, "Maps"),
+        IconItem(R.drawable.ic_md_browser, "Browser"),
+        IconItem(R.drawable.ic_md_gmail, "Gmail"),
+        IconItem(R.drawable.ic_md_contacts, "Contacts"),
+        IconItem(R.drawable.ic_md_calculator, "Calculator"),
+        IconItem(R.drawable.ic_md_clock, "Clock"),
+        IconItem(R.drawable.ic_md_calendar, "Calendar"),
+        IconItem(R.drawable.ic_md_weather, "Weather"),
+        IconItem(R.drawable.ic_md_notes, "Notes"),
+        IconItem(R.drawable.ic_md_files, "Files"),
+        IconItem(R.drawable.ic_md_favorites, "Favorites"),
+        IconItem(R.drawable.ic_md_star, "Star"),
+        IconItem(R.drawable.ic_md_alerts, "Alerts"),
+        IconItem(R.drawable.ic_md_search, "Search"),
+        IconItem(R.drawable.ic_md_settings, "Settings"),
+        IconItem(R.drawable.ic_md_wifi, "WiFi"),
+        IconItem(R.drawable.ic_md_bluetooth, "Bluetooth"),
+        IconItem(R.drawable.ic_md_battery, "Battery"),
+        IconItem(R.drawable.ic_md_sun, "Sun"),
+        IconItem(R.drawable.ic_md_compass, "Compass"),
+        IconItem(R.drawable.ic_md_navigation, "Navigation"),
+        IconItem(R.drawable.ic_md_shop, "Shop"),
+        IconItem(R.drawable.ic_md_wallet, "Wallet"),
+        IconItem(R.drawable.ic_md_mic, "Mic"),
+        IconItem(R.drawable.ic_md_video, "Video"),
+        IconItem(R.drawable.ic_md_play, "Play"),
+        IconItem(R.drawable.ic_md_saved, "Saved"),
+        IconItem(R.drawable.ic_md_trash, "Trash")
+    )
+
+    private val gpWallpapers = listOf(
+        R.drawable.wp_gp_1,
+        R.drawable.wp_gp_2,
+        R.drawable.wp_gp_3,
+        R.drawable.wp_gp_4,
+        R.drawable.wp_gp_5,
+        R.drawable.wp_gp_6
+    )
+    private val gpIcons = listOf(
+        IconItem(R.drawable.ic_gp_phone, "Phone"),
+        IconItem(R.drawable.ic_gp_messages, "Messages"),
+        IconItem(R.drawable.ic_gp_camera, "Camera"),
+        IconItem(R.drawable.ic_gp_photos, "Photos"),
+        IconItem(R.drawable.ic_gp_music, "Music"),
+        IconItem(R.drawable.ic_gp_maps, "Maps"),
+        IconItem(R.drawable.ic_gp_browser, "Browser"),
+        IconItem(R.drawable.ic_gp_gmail, "Gmail"),
+        IconItem(R.drawable.ic_gp_contacts, "Contacts"),
+        IconItem(R.drawable.ic_gp_calculator, "Calculator"),
+        IconItem(R.drawable.ic_gp_clock, "Clock"),
+        IconItem(R.drawable.ic_gp_calendar, "Calendar"),
+        IconItem(R.drawable.ic_gp_weather, "Weather"),
+        IconItem(R.drawable.ic_gp_notes, "Notes"),
+        IconItem(R.drawable.ic_gp_files, "Files"),
+        IconItem(R.drawable.ic_gp_favorites, "Favorites"),
+        IconItem(R.drawable.ic_gp_star, "Star"),
+        IconItem(R.drawable.ic_gp_alerts, "Alerts"),
+        IconItem(R.drawable.ic_gp_search, "Search"),
+        IconItem(R.drawable.ic_gp_settings, "Settings"),
+        IconItem(R.drawable.ic_gp_wifi, "WiFi"),
+        IconItem(R.drawable.ic_gp_bluetooth, "Bluetooth"),
+        IconItem(R.drawable.ic_gp_battery, "Battery"),
+        IconItem(R.drawable.ic_gp_sun, "Sun"),
+        IconItem(R.drawable.ic_gp_compass, "Compass"),
+        IconItem(R.drawable.ic_gp_navigation, "Navigation"),
+        IconItem(R.drawable.ic_gp_shop, "Shop"),
+        IconItem(R.drawable.ic_gp_wallet, "Wallet"),
+        IconItem(R.drawable.ic_gp_mic, "Mic"),
+        IconItem(R.drawable.ic_gp_video, "Video"),
+        IconItem(R.drawable.ic_gp_play, "Play"),
+        IconItem(R.drawable.ic_gp_saved, "Saved"),
+        IconItem(R.drawable.ic_gp_trash, "Trash")
+    )
+
     val bundles: List<RizBundle> = listOf(
         RizBundle(
             id = "midnight_velvet",
@@ -164,6 +475,62 @@ object BundleRepository {
             accentColor = 0xFF7C6CFF.toInt(),
             wallpapers = ndWallpapers,
             icons = ndIcons
+        ),
+        RizBundle(
+            id = "web_slinger",
+            name = "Web Slinger",
+            tagline = "Red webs & rooftop heroes",
+            accentColor = 0xFFE53935.toInt(),
+            wallpapers = wsWallpapers,
+            icons = wsIcons
+        ),
+        RizBundle(
+            id = "neo_tokyo",
+            name = "Neo Tokyo",
+            tagline = "Anime nights in neon rain",
+            accentColor = 0xFF00E5FF.toInt(),
+            wallpapers = ntWallpapers,
+            icons = ntIcons
+        ),
+        RizBundle(
+            id = "cherry_bow",
+            name = "Cherry Bow",
+            tagline = "Coquette dreams in pink",
+            accentColor = 0xFFE65096.toInt(),
+            wallpapers = cbWallpapers,
+            icons = cbIcons
+        ),
+        RizBundle(
+            id = "street_phantom",
+            name = "Street Phantom",
+            tagline = "Dark urban & powerful",
+            accentColor = 0xFF9AA0A6.toInt(),
+            wallpapers = spWallpapers,
+            icons = spIcons
+        ),
+        RizBundle(
+            id = "midnight_academy",
+            name = "Midnight Academy",
+            tagline = "Dark academia magic",
+            accentColor = 0xFFD4A017.toInt(),
+            wallpapers = maWallpapers,
+            icons = maIcons
+        ),
+        RizBundle(
+            id = "midnight_drive",
+            name = "Midnight Drive",
+            tagline = "Cars & night highways",
+            accentColor = 0xFFFF6D00.toInt(),
+            wallpapers = mdWallpapers,
+            icons = mdIcons
+        ),
+        RizBundle(
+            id = "ghost_protocol",
+            name = "Ghost Protocol",
+            tagline = "Hacker green & shadows",
+            accentColor = 0xFF00E676.toInt(),
+            wallpapers = gpWallpapers,
+            icons = gpIcons
         )
     )
 }
