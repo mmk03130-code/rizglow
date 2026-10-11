@@ -21,6 +21,7 @@ import kotlin.math.abs
 class ControlCenterAccessService : AccessibilityService() {
 
     private var strip: FrameLayout? = null
+    private var panelView: ControlCenterPanelView? = null
     private var testMode = false
     private lateinit var wm: WindowManager
 
@@ -34,6 +35,7 @@ class ControlCenterAccessService : AccessibilityService() {
     override fun onInterrupt() {}
 
     override fun onDestroy() {
+        hidePanel()
         strip?.let { try { wm.removeView(it) } catch (e: Exception) {} }
         strip = null
         if (instance === this) instance = null
@@ -136,16 +138,42 @@ class ControlCenterAccessService : AccessibilityService() {
     }
 
     private fun openPanel() {
+        // Float the panel in as an instant system overlay (like the big theme
+        // apps) — no activity launch, no transition, no flakiness.
+        showPanel()
+    }
+
+    /** Show the panel as a system overlay. The service knows exactly when it's
+     *  up, so the strip gate can't get stuck like the old activity flag did. */
+    fun showPanel() {
+        if (panelView != null) return
+        val params = WindowManager.LayoutParams(
+            WindowManager.LayoutParams.MATCH_PARENT,
+            WindowManager.LayoutParams.MATCH_PARENT,
+            WindowManager.LayoutParams.TYPE_ACCESSIBILITY_OVERLAY,
+            WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE,
+            PixelFormat.TRANSLUCENT
+        )
+        val v = ControlCenterPanelView(this) { hidePanel() }
+        v.refresh()
+        panelView = v
+        ControlCenterGate.panelOpen = true
         try {
-            startActivity(
-                Intent(this, ControlCenterActivity::class.java)
-                    .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-            )
+            wm.addView(v, params)
         } catch (e: Exception) {
+            panelView = null
+            ControlCenterGate.panelOpen = false
             android.widget.Toast.makeText(this,
-                "Panel launch blocked: ${e.javaClass.simpleName}",
+                "Panel overlay blocked: ${e.javaClass.simpleName}",
                 android.widget.Toast.LENGTH_LONG).show()
         }
+    }
+
+    fun hidePanel() {
+        val v = panelView ?: return
+        panelView = null
+        ControlCenterGate.panelOpen = false
+        try { wm.removeView(v) } catch (e: Exception) {}
     }
 
     companion object {
