@@ -65,7 +65,7 @@ class ControlCenterPanelView(
             setOnClickListener { /* consume: don't dismiss */ }
         }
         val scroll = ScrollView(context).apply {
-            layoutParams = LayoutParams(dp(if (compact) 320 else 340), LayoutParams.WRAP_CONTENT)
+            layoutParams = LayoutParams(dp(panelWidthDp(context)), LayoutParams.WRAP_CONTENT)
             addView(panel)
         }
         addView(scroll)

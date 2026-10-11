@@ -4,7 +4,9 @@ import android.accessibilityservice.AccessibilityService
 import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
+import android.content.res.Configuration
 import android.graphics.PixelFormat
+import android.os.Build
 import android.provider.Settings
 import android.view.Gravity
 import android.view.MotionEvent
@@ -33,6 +35,21 @@ class ControlCenterAccessService : AccessibilityService() {
 
     override fun onAccessibilityEvent(event: AccessibilityEvent?) {}
     override fun onInterrupt() {}
+
+    override fun onConfigurationChanged(newConfig: Configuration) {
+        super.onConfigurationChanged(newConfig)
+        // Foldable unfolded, rotated, or resized: rebuild the panel at the
+        // new size and re-anchor the strip (its 40% was for the old width).
+        if (panelView != null) {
+            hidePanel()
+            showPanel()
+        }
+        strip?.let {
+            try { wm.removeView(it) } catch (e: Exception) {}
+            strip = null
+            addStrip()
+        }
+    }
 
     override fun onDestroy() {
         hidePanel()
@@ -212,3 +229,23 @@ class ControlCenterAccessService : AccessibilityService() {
 object ControlCenterGate {
     var panelOpen = false
 }
+
+/** Screen width in dp, safe from a Service on any API level. Uses *current*
+ *  metrics (not maximum) so closed foldables and split-screen report right. */
+fun screenWidthDp(context: Context): Int {
+    val wm = context.getSystemService(Context.WINDOW_SERVICE) as WindowManager
+    val density = context.resources.displayMetrics.density
+    return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+        (wm.currentWindowMetrics.bounds.width() / density).toInt()
+    } else {
+        val dm = android.util.DisplayMetrics()
+        @Suppress("DEPRECATION")
+        wm.defaultDisplay.getRealMetrics(dm)
+        (dm.widthPixels / dm.density).toInt()
+    }
+}
+
+/** Panel width: 24dp margins on phones, capped at 360dp so it stays
+ *  thumb-sized on tablets and unfolded foldables. Fixes the 308dp overflow. */
+fun panelWidthDp(context: Context): Int =
+    minOf(360, screenWidthDp(context) - 48).coerceAtLeast(200)
