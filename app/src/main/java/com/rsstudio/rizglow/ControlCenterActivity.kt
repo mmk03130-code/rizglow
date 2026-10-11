@@ -13,7 +13,7 @@ class ControlCenterActivity : Activity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         overridePendingTransition(0, 0) // no app-launch animation; feels like an overlay
-        panel = ControlCenterPanelView(this) { finish() }
+        panel = ControlCenterPanelView(this, onDismiss = { finish() })
         setContentView(panel)
     }
 

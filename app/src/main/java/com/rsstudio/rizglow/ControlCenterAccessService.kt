@@ -154,7 +154,7 @@ class ControlCenterAccessService : AccessibilityService() {
             WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE,
             PixelFormat.TRANSLUCENT
         )
-        val v = ControlCenterPanelView(this) { hidePanel() }
+        val v = ControlCenterPanelView(this, { hidePanel() }, compact = true)
         v.refresh()
         panelView = v
         ControlCenterGate.panelOpen = true

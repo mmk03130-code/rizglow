@@ -25,9 +25,12 @@ import android.widget.Toast
 /** The fuzzy control-center panel UI, shared by the in-app Activity and the
  *  swipe-triggered system overlay. Hosts are responsible for adding/removing
  *  this view; tapping outside or "Close" calls [onDismiss]. */
+/** @param compact true for the swipe overlay: pure controls only, no header,
+ *  no setup pills, no mascot — like the big theme apps. False for in-app. */
 class ControlCenterPanelView(
     context: Context,
-    private val onDismiss: () -> Unit
+    private val onDismiss: () -> Unit,
+    private val compact: Boolean = false
 ) : LinearLayout(context) {
 
     private val audio: AudioManager =
@@ -51,8 +54,8 @@ class ControlCenterPanelView(
     init {
         orientation = VERTICAL
         gravity = Gravity.CENTER
-        setBackgroundColor(0xCC000000.toInt())
-        setPadding(dp(16), dp(48), dp(16), dp(48))
+        setBackgroundColor((if (compact) 0x99000000 else 0xCC000000).toInt())
+        setPadding(dp(16), dp(if (compact) 24 else 48), dp(16), dp(if (compact) 24 else 48))
         setOnClickListener { onDismiss() } // tap outside dismisses
 
         val panel = LinearLayout(context).apply {
@@ -62,26 +65,30 @@ class ControlCenterPanelView(
             setOnClickListener { /* consume: don't dismiss */ }
         }
         val scroll = ScrollView(context).apply {
-            layoutParams = LayoutParams(dp(340), LayoutParams.WRAP_CONTENT)
+            layoutParams = LayoutParams(dp(if (compact) 320 else 340), LayoutParams.WRAP_CONTENT)
             addView(panel)
         }
         addView(scroll)
 
-        panel.addView(headerRow())
-        panel.addView(setupRow())
+        if (!compact) {
+            panel.addView(headerRow())
+            panel.addView(setupRow())
+        }
         panel.addView(connectivityRow())
         panel.addView(musicCard())
         panel.addView(smallTilesRow())
         panel.addView(slidersRow())
         panel.addView(shortcutsRow())
-        val cat = ImageView(context).apply {
-            setImageResource(R.drawable.cc_cat)
-            layoutParams = LayoutParams(
-                LayoutParams.MATCH_PARENT, dp(120)
-            ).apply { topMargin = dp(4) }
-            scaleType = ImageView.ScaleType.CENTER_CROP
+        if (!compact) {
+            val cat = ImageView(context).apply {
+                setImageResource(R.drawable.cc_cat)
+                layoutParams = LayoutParams(
+                    LayoutParams.MATCH_PARENT, dp(120)
+                ).apply { topMargin = dp(4) }
+                scaleType = ImageView.ScaleType.CENTER_CROP
+            }
+            panel.addView(cat)
         }
-        panel.addView(cat)
     }
 
     /** Refresh tile states + setup buttons. Hosts call this when showing. */
@@ -220,7 +227,7 @@ class ControlCenterPanelView(
             gravity = Gravity.CENTER
             setBackgroundResource(R.drawable.cc_tile_bg)
             setPadding(dp(4), dp(10), dp(4), dp(10))
-            layoutParams = LayoutParams(0, dp(86), 1f).apply {
+            layoutParams = LayoutParams(0, dp(if (compact) 70 else 86), 1f).apply {
                 marginEnd = dp(10)
             }
             isClickable = true
