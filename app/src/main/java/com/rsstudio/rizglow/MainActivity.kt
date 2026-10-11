@@ -150,62 +150,55 @@ class MainActivity : Activity() {
                 LinearLayout.LayoutParams.WRAP_CONTENT
             ).apply { bottomMargin = dp(16) }
         }
-        // Current theme: Midnight Velvet panel.
-        val themeCard = FrameLayout(this).apply {
-            layoutParams = LinearLayout.LayoutParams(dp(140), dp(180)).apply {
-                marginEnd = dp(12)
+        // Panel themes: one card per theme, tap to select + preview.
+        for (t in PanelThemes.ALL) {
+            val selected = PanelThemes.current(this).id == t.id
+            val themeCard = FrameLayout(this).apply {
+                layoutParams = LinearLayout.LayoutParams(dp(140), dp(180)).apply {
+                    marginEnd = dp(12)
+                }
+                background = GradientDrawable().apply {
+                    shape = GradientDrawable.RECTANGLE
+                    cornerRadius = dp(16).toFloat()
+                    setColor(getColor(R.color.surface))
+                    setStroke(dp(if (selected) 3 else 1),
+                        if (selected) 0xFFB388FF.toInt() else getColor(R.color.muted))
+                }
+                clipToOutline = true
+                isClickable = true
+                isFocusable = true
+                setOnClickListener {
+                    PanelThemes.select(this@MainActivity, t.id)
+                    Toast.makeText(this@MainActivity, "${t.name} applied",
+                        Toast.LENGTH_SHORT).show()
+                    populateDiscover() // refresh selection rings
+                    startActivity(Intent(this@MainActivity, ControlCenterActivity::class.java))
+                }
             }
-            background = GradientDrawable().apply {
-                shape = GradientDrawable.RECTANGLE
-                cornerRadius = dp(16).toFloat()
-                setColor(getColor(R.color.surface))
-                setStroke(dp(2), 0xFFB388FF.toInt())
+            val themePreview = ImageView(this).apply {
+                setImageResource(t.panelBg)
+                scaleType = ImageView.ScaleType.CENTER_CROP
+                layoutParams = FrameLayout.LayoutParams(
+                    FrameLayout.LayoutParams.MATCH_PARENT, dp(120)
+                )
             }
-            clipToOutline = true
-            isClickable = true
-            isFocusable = true
-            setOnClickListener {
-                startActivity(Intent(this@MainActivity, ControlCenterActivity::class.java))
+            themeCard.addView(themePreview)
+            val themeLabel = TextView(this).apply {
+                text = "${t.name}\n${if (selected) "✓ Active — tap to preview" else "Tap to apply"}"
+                textSize = 13f
+                setTypeface(typeface, Typeface.BOLD)
+                setTextColor(getColor(R.color.text))
+                gravity = Gravity.CENTER
+                setPadding(dp(8), dp(4), dp(8), dp(8))
+                layoutParams = FrameLayout.LayoutParams(
+                    FrameLayout.LayoutParams.MATCH_PARENT,
+                    FrameLayout.LayoutParams.WRAP_CONTENT,
+                    Gravity.BOTTOM
+                )
             }
+            themeCard.addView(themeLabel)
+            themeRow.addView(themeCard)
         }
-        val themePreview = ImageView(this).apply {
-            setImageResource(R.drawable.cc_panel_bg)
-            scaleType = ImageView.ScaleType.CENTER_CROP
-            layoutParams = FrameLayout.LayoutParams(
-                FrameLayout.LayoutParams.MATCH_PARENT, dp(120)
-            )
-        }
-        themeCard.addView(themePreview)
-        val themeLabel = TextView(this).apply {
-            text = "Midnight Velvet\nTap to preview"
-            textSize = 13f
-            setTypeface(typeface, Typeface.BOLD)
-            setTextColor(getColor(R.color.text))
-            gravity = Gravity.CENTER
-            setPadding(dp(8), dp(4), dp(8), dp(8))
-            layoutParams = FrameLayout.LayoutParams(
-                FrameLayout.LayoutParams.MATCH_PARENT,
-                FrameLayout.LayoutParams.WRAP_CONTENT,
-                Gravity.BOTTOM
-            )
-        }
-        themeCard.addView(themeLabel)
-        themeRow.addView(themeCard)
-        // Coming-soon slot.
-        val soonCard = TextView(this).apply {
-            text = "+\nMore soon"
-            textSize = 15f
-            setTextColor(getColor(R.color.muted))
-            gravity = Gravity.CENTER
-            layoutParams = LinearLayout.LayoutParams(dp(140), dp(180))
-            background = GradientDrawable().apply {
-                shape = GradientDrawable.RECTANGLE
-                cornerRadius = dp(16).toFloat()
-                setColor(getColor(R.color.surface))
-                setStroke(dp(1), getColor(R.color.muted))
-            }
-        }
-        themeRow.addView(soonCard)
         container.addView(themeRow)
         val inflater = LayoutInflater.from(this)
         for (b in BundleRepository.bundles) {

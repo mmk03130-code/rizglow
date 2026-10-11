@@ -39,9 +39,25 @@ class ControlCenterPanelView(
     private var torchCamId: String? = null
     private var bubbleBtn: TextView? = null
     private var swipeBtn: TextView? = null
+    private val theme = PanelThemes.current(context)
 
     private fun dp(v: Int) = (v * resources.displayMetrics.density).toInt()
     private fun canWrite() = Settings.System.canWrite(context)
+
+    // ---------- auto layout ----------
+    /** Panel width already adapts (min 360, 24dp margins); everything inside
+     *  scales from it so small phones and large-display mode stay proportional. */
+    private val panelW: Int = panelWidthDp(context)
+    private val narrow: Boolean = panelW < 300
+    /** Tile height proportional to panel width, clamped to sane bounds. */
+    private fun tileH(): Int =
+        (panelW * if (compact) 0.20f else 0.27f).toInt().coerceIn(56, 96)
+    private fun panelPad(): Int = dp(if (narrow) 14 else 18)
+    private fun labelSize(): Float = if (narrow) 11.5f else 13f
+    private fun statusSize(): Float = if (narrow) 10f else 11f
+    /** White text gets a dark shadow; dark text (Ice) gets a soft light one. */
+    private fun shadowColor(): Int =
+        if (theme.isLight()) 0x40FFFFFF.toInt() else 0x80000000.toInt()
 
     /** All startActivity calls funnel through here: NEW_TASK is required when
      *  the host is a Service, harmless when it's an Activity.
@@ -55,14 +71,15 @@ class ControlCenterPanelView(
     init {
         orientation = VERTICAL
         gravity = Gravity.CENTER
-        setBackgroundColor((if (compact) 0x99000000 else 0xCC000000).toInt())
+        setBackgroundColor(if (compact) theme.dimCompact else theme.dimFull)
         setPadding(dp(16), dp(if (compact) 24 else 48), dp(16), dp(if (compact) 24 else 48))
         setOnClickListener { onDismiss() } // tap outside dismisses
 
         val panel = LinearLayout(context).apply {
             orientation = VERTICAL
-            setBackgroundResource(R.drawable.cc_panel_bg)
-            setPadding(dp(18), dp(18), dp(18), dp(10))
+            setBackgroundResource(theme.panelBg)
+            val pp = panelPad()
+            setPadding(pp, pp, pp, dp(10))
             setOnClickListener { /* consume: don't dismiss */ }
         }
         val scroll = ScrollView(context).apply {
@@ -209,14 +226,15 @@ class ControlCenterPanelView(
             text = "Rizglow Panel"
             textSize = 18f
             setTypeface(typeface, android.graphics.Typeface.BOLD)
-            setTextColor(0xFFFFFFFF.toInt())
-            setShadowLayer(4f, 0f, 2f, 0x80000000.toInt())
+            setTextColor(theme.textOnTile)
+            setShadowLayer(4f, 0f, 2f, shadowColor())
             layoutParams = LayoutParams(0, LayoutParams.WRAP_CONTENT, 1f)
         }
         val close = TextView(context).apply {
             text = "Close"
             textSize = 14f
-            setTextColor(0xFFFFFFFF.toInt())
+            setTextColor(theme.textOnTile)
+            setShadowLayer(4f, 0f, 2f, shadowColor())
             setPadding(dp(12), dp(8), dp(12), dp(8))
             isClickable = true
             setOnClickListener { onDismiss() }
@@ -226,14 +244,14 @@ class ControlCenterPanelView(
         return row
     }
 
-    /** Fuzzy purple tile with white label + status. */
+    /** Themed tile with label + status, auto-sized to the panel width. */
     private fun tile(name: String, label: String, onClick: () -> Unit): LinearLayout {
         val t = LinearLayout(context).apply {
             orientation = VERTICAL
             gravity = Gravity.CENTER
-            setBackgroundResource(R.drawable.cc_tile_bg)
+            setBackgroundResource(theme.tileBg)
             setPadding(dp(4), dp(10), dp(4), dp(10))
-            layoutParams = LayoutParams(0, dp(if (compact) 62 else 86), 1f).apply {
+            layoutParams = LayoutParams(0, dp(tileH()), 1f).apply {
                 marginEnd = dp(10)
             }
             isClickable = true
@@ -242,17 +260,17 @@ class ControlCenterPanelView(
         }
         val tv = TextView(context).apply {
             text = label
-            textSize = 13f
+            textSize = labelSize()
             setTypeface(typeface, android.graphics.Typeface.BOLD)
-            setTextColor(0xFFFFFFFF.toInt())
+            setTextColor(theme.textOnTile)
             gravity = Gravity.CENTER
-            setShadowLayer(4f, 0f, 2f, 0x80000000.toInt())
+            setShadowLayer(4f, 0f, 2f, shadowColor())
         }
         val st = TextView(context).apply {
-            textSize = 11f
-            setTextColor(0xFFFFFFFF.toInt())
+            textSize = statusSize()
+            setTextColor(theme.textOnTile)
             gravity = Gravity.CENTER
-            setShadowLayer(4f, 0f, 2f, 0x80000000.toInt())
+            setShadowLayer(4f, 0f, 2f, shadowColor())
         }
         statusViews[name] = st
         t.addView(tv)
@@ -287,7 +305,7 @@ class ControlCenterPanelView(
         val card = LinearLayout(context).apply {
             orientation = HORIZONTAL
             gravity = Gravity.CENTER_VERTICAL
-            setBackgroundResource(R.drawable.cc_card_bg)
+            setBackgroundResource(theme.cardBg)
             setPadding(dp(16), dp(12), dp(16), dp(12))
             layoutParams = LayoutParams(
                 LayoutParams.MATCH_PARENT,
@@ -297,15 +315,17 @@ class ControlCenterPanelView(
         val note = TextView(context).apply {
             text = "\u266B"
             textSize = 22f
-            setTextColor(0xFF6B4A8F.toInt())
+            setTextColor(theme.accent)
             setPadding(0, 0, dp(8), 0)
+            setShadowLayer(4f, 0f, 2f, shadowColor())
         }
         card.addView(note)
         val label = TextView(context).apply {
             text = "Music"
             textSize = 15f
             setTypeface(typeface, android.graphics.Typeface.BOLD)
-            setTextColor(0xFF6B4A8F.toInt())
+            setTextColor(theme.accent)
+            setShadowLayer(4f, 0f, 2f, shadowColor())
             layoutParams = LayoutParams(0, LayoutParams.WRAP_CONTENT, 1f)
         }
         card.addView(label)
@@ -313,7 +333,8 @@ class ControlCenterPanelView(
             TextView(context).apply {
                 this.text = text
                 textSize = 20f
-                setTextColor(0xFF6B4A8F.toInt())
+                setTextColor(theme.accent)
+                setShadowLayer(4f, 0f, 2f, shadowColor())
                 setPadding(dp(14), dp(6), dp(14), dp(6))
                 isClickable = true
                 setOnClickListener { mediaKey(key) }
@@ -393,7 +414,7 @@ class ControlCenterPanelView(
         val card = LinearLayout(context).apply {
             orientation = VERTICAL
             gravity = Gravity.CENTER_HORIZONTAL
-            setBackgroundResource(R.drawable.cc_slider_bg)
+            setBackgroundResource(theme.sliderBg)
             setPadding(dp(8), dp(12), dp(8), dp(12))
             layoutParams = LayoutParams(0, dp(if (compact) 150 else 190), 1f)
         }
@@ -407,7 +428,8 @@ class ControlCenterPanelView(
             text = label
             textSize = 12f
             setTypeface(typeface, android.graphics.Typeface.BOLD)
-            setTextColor(0xFF6B4A8F.toInt())
+            setTextColor(theme.accent)
+            setShadowLayer(4f, 0f, 2f, shadowColor())
             gravity = Gravity.CENTER
         })
         val slider = VerticalSlider(context).apply {
