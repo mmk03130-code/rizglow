@@ -94,7 +94,7 @@ class ControlCenterPanelView(
         val row = LinearLayout(context).apply {
             orientation = HORIZONTAL
             gravity = Gravity.CENTER
-            setPadding(0, 0, 0, dp(10))
+            setPadding(0, 0, 0, dp(14))
         }
         val pill = { text: String, onClick: () -> Unit ->
             TextView(context).apply {
@@ -221,7 +221,7 @@ class ControlCenterPanelView(
             setBackgroundResource(R.drawable.cc_tile_bg)
             setPadding(dp(4), dp(10), dp(4), dp(10))
             layoutParams = LayoutParams(0, dp(86), 1f).apply {
-                marginEnd = dp(8)
+                marginEnd = dp(10)
             }
             isClickable = true
             isFocusable = true
@@ -250,7 +250,7 @@ class ControlCenterPanelView(
     private fun connectivityRow(): LinearLayout {
         val row = LinearLayout(context).apply {
             orientation = HORIZONTAL
-            setPadding(0, 0, 0, dp(10))
+            setPadding(0, 0, 0, dp(14))
         }
         row.addView(tile("airplane", "Airplane") {
             launch(Intent(Settings.ACTION_WIRELESS_SETTINGS))
@@ -281,6 +281,13 @@ class ControlCenterPanelView(
                 LayoutParams.WRAP_CONTENT
             ).apply { bottomMargin = dp(10) }
         }
+        val note = TextView(context).apply {
+            text = "\u266B"
+            textSize = 22f
+            setTextColor(0xFF6B4A8F.toInt())
+            setPadding(0, 0, dp(8), 0)
+        }
+        card.addView(note)
         val label = TextView(context).apply {
             text = "Music"
             textSize = 15f
@@ -319,7 +326,7 @@ class ControlCenterPanelView(
     private fun smallTilesRow(): LinearLayout {
         val row = LinearLayout(context).apply {
             orientation = HORIZONTAL
-            setPadding(0, 0, 0, dp(10))
+            setPadding(0, 0, 0, dp(14))
         }
         row.addView(tile("rotate", "Rotate") { toggleRotate() })
         row.addView(tile("silent", "Silent") { toggleSilent() })
@@ -340,9 +347,9 @@ class ControlCenterPanelView(
         val row = LinearLayout(context).apply {
             orientation = HORIZONTAL
             gravity = Gravity.CENTER
-            setPadding(0, 0, 0, dp(10))
+            setPadding(0, 0, 0, dp(14))
         }
-        row.addView(sliderCard("Brightness", 255,
+        row.addView(sliderCard("\u2600", "Brightness", 255,
             init = {
                 try {
                     Settings.System.getInt(context.contentResolver, Settings.System.SCREEN_BRIGHTNESS)
@@ -359,13 +366,13 @@ class ControlCenterPanelView(
             layoutParams = LayoutParams(dp(12), 1)
         }
         row.addView(spacer)
-        row.addView(sliderCard("Volume", audio.getStreamMaxVolume(AudioManager.STREAM_MUSIC),
+        row.addView(sliderCard("\uD83D\uDD0A", "Volume", audio.getStreamMaxVolume(AudioManager.STREAM_MUSIC),
             init = { audio.getStreamVolume(AudioManager.STREAM_MUSIC) },
             onChange = { audio.setStreamVolume(AudioManager.STREAM_MUSIC, it, 0) }))
         return row
     }
 
-    private fun sliderCard(label: String, max: Int, init: () -> Int, onChange: (Int) -> Unit): LinearLayout {
+    private fun sliderCard(icon: String, label: String, max: Int, init: () -> Int, onChange: (Int) -> Unit): LinearLayout {
         val card = LinearLayout(context).apply {
             orientation = VERTICAL
             gravity = Gravity.CENTER_HORIZONTAL
@@ -373,6 +380,12 @@ class ControlCenterPanelView(
             setPadding(dp(8), dp(12), dp(8), dp(12))
             layoutParams = LayoutParams(0, dp(190), 1f)
         }
+        card.addView(TextView(context).apply {
+            text = icon
+            textSize = 26f
+            gravity = Gravity.CENTER
+            setPadding(0, 0, 0, dp(2))
+        })
         card.addView(TextView(context).apply {
             text = label
             textSize = 12f
