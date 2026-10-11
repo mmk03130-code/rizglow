@@ -34,7 +34,9 @@ class ControlCenterPanelView(
 
     private val audio: AudioManager =
         context.getSystemService(Context.AUDIO_SERVICE) as AudioManager
-    private val statusViews = mutableMapOf<String, TextView>()
+    private val btnViews = mutableMapOf<String, FrameLayout>()
+    private val btnIcons = mutableMapOf<String, ImageView>()
+    private val btnState = mutableMapOf<String, () -> Boolean>()
     private var torchOn = false
     private var torchCamId: String? = null
     private var bubbleBtn: TextView? = null
@@ -244,38 +246,37 @@ class ControlCenterPanelView(
         return row
     }
 
-    /** Themed tile with label + status, auto-sized to the panel width. */
-    private fun tile(name: String, label: String, onClick: () -> Unit): LinearLayout {
-        val t = LinearLayout(context).apply {
-            orientation = VERTICAL
-            gravity = Gravity.CENTER
-            setBackgroundResource(theme.tileBg)
-            setPadding(dp(4), dp(10), dp(4), dp(10))
-            layoutParams = LayoutParams(0, dp(tileH()), 1f).apply {
+    /** Circular 3D button with centered icon glyph, like the big theme apps.
+     *  ON = accent color button + dark icon; OFF = dark button + light icon.
+     *  No text labels — state reads from the button color. */
+    private fun tile(name: String, iconRes: Int, isOn: () -> Boolean, onClick: () -> Unit): FrameLayout {
+        val size = dp(btnSize())
+        val btn = FrameLayout(context).apply {
+            setBackgroundResource(if (isOn()) theme.btnOn else theme.btnOff)
+            layoutParams = LayoutParams(0, size, 1f).apply {
                 marginEnd = dp(10)
             }
             isClickable = true
             isFocusable = true
             setOnClickListener { onClick(); refreshTiles() }
         }
-        val tv = TextView(context).apply {
-            text = label
-            textSize = labelSize()
-            setTypeface(typeface, android.graphics.Typeface.BOLD)
-            setTextColor(theme.textOnTile)
-            gravity = Gravity.CENTER
-            setShadowLayer(4f, 0f, 2f, shadowColor())
+        val icon = ImageView(context).apply {
+            setImageResource(iconRes)
+            setColorFilter(if (isOn()) theme.iconOnBtn else theme.iconOffBtn)
+            val s = dp((btnSize() * 0.42f).toInt())
+            layoutParams = FrameLayout.LayoutParams(s, s, Gravity.CENTER)
         }
-        val st = TextView(context).apply {
-            textSize = statusSize()
-            setTextColor(theme.textOnTile)
-            gravity = Gravity.CENTER
-            setShadowLayer(4f, 0f, 2f, shadowColor())
-        }
-        statusViews[name] = st
-        t.addView(tv)
-        t.addView(st)
-        return t
+        btn.addView(icon)
+        btnViews[name] = btn
+        btnIcons[name] = icon
+        btnState[name] = isOn
+        return btn
+    }
+
+    /** Circular button diameter: fits 4 across with margins. */
+    private fun btnSize(): Int {
+        val w = panelWidthDp(context)
+        return ((w - 32 - 30) / 4).toInt().coerceIn(56, 84)
     }
 
     private fun connectivityRow(): LinearLayout {
@@ -283,17 +284,17 @@ class ControlCenterPanelView(
             orientation = HORIZONTAL
             setPadding(0, 0, 0, dp(if (compact) 10 else 14))
         }
-        row.addView(tile("airplane", "Airplane") {
+        row.addView(tile("airplane", R.drawable.ic_panel_airplane, { false }) {
             launch(Intent(Settings.ACTION_WIRELESS_SETTINGS))
         })
-        row.addView(tile("data", "Data") {
+        row.addView(tile("data", R.drawable.ic_panel_data, { false }) {
             launch(Intent(Settings.ACTION_NETWORK_OPERATOR_SETTINGS))
         })
-        row.addView(tile("wifi", "WiFi") {
+        row.addView(tile("wifi", R.drawable.ic_panel_wifi, { false }) {
             if (Build.VERSION.SDK_INT >= 29) launch(Intent(Settings.Panel.ACTION_WIFI))
             else launch(Intent(Settings.ACTION_WIFI_SETTINGS))
         })
-        val last = tile("bt", "Bluetooth") {
+        val last = tile("bt", R.drawable.ic_panel_bt, { false }) {
             launch(Intent(Settings.ACTION_BLUETOOTH_SETTINGS))
         }
         (last.layoutParams as LayoutParams).marginEnd = 0
@@ -362,10 +363,10 @@ class ControlCenterPanelView(
             orientation = HORIZONTAL
             setPadding(0, 0, 0, dp(if (compact) 10 else 14))
         }
-        row.addView(tile("rotate", "Rotate") { toggleRotate() })
-        row.addView(tile("silent", "Silent") { toggleSilent() })
-        row.addView(tile("dnd", "Focus") { toggleDnd() })
-        val last = tile("alerts", "Alerts") {
+        row.addView(tile("rotate", R.drawable.ic_panel_rotate, { isRotateOn() }) { toggleRotate() })
+        row.addView(tile("silent", R.drawable.ic_panel_silent, { isSilentOn() }) { toggleSilent() })
+        row.addView(tile("dnd", R.drawable.ic_panel_dnd, { isDndOn() }) { toggleDnd() })
+        val last = tile("alerts", R.drawable.ic_panel_alerts, { false }) {
             if (!ControlCenterAccessService.openNotifications()) {
                 Toast.makeText(context, "Turn \"Swipe\" on first", Toast.LENGTH_SHORT).show()
             } else {
@@ -449,15 +450,15 @@ class ControlCenterPanelView(
             orientation = HORIZONTAL
             setPadding(0, 0, 0, dp(6))
         }
-        row.addView(tile("torch", "Torch") { setTorch(!torchOn) })
-        row.addView(tile("camera", "Camera") {
+        row.addView(tile("torch", R.drawable.ic_panel_torch, { torchOn }) { setTorch(!torchOn) })
+        row.addView(tile("camera", R.drawable.ic_panel_camera, { false }) {
             IconTargets.resolve(context, "Camera")?.let { launch(it) }
         })
-        row.addView(tile("calc", "Calc") {
+        row.addView(tile("calc", R.drawable.ic_panel_calc, { false }) {
             IconTargets.resolve(context, "Calculator")?.let { launch(it) }
                 ?: Toast.makeText(context, "No calculator found", Toast.LENGTH_SHORT).show()
         })
-        val last = tile("settings", "Settings") {
+        val last = tile("settings", R.drawable.ic_panel_settings, { false }) {
             IconTargets.resolve(context, "Settings")?.let { launch(it) }
         }
         (last.layoutParams as LayoutParams).marginEnd = 0
@@ -516,30 +517,27 @@ class ControlCenterPanelView(
         )
     }
 
-    private fun refreshTiles() {
-        statusViews["torch"]?.text = if (torchOn) "On" else "Off"
-        statusViews["silent"]?.text =
-            if (audio.ringerMode == AudioManager.RINGER_MODE_NORMAL) "Off" else "On"
+    private fun isRotateOn(): Boolean {
+        if (!canWrite()) return false
+        return try {
+            Settings.System.getInt(context.contentResolver, Settings.System.ACCELEROMETER_ROTATION) == 1
+        } catch (e: Exception) { false }
+    }
+
+    private fun isSilentOn(): Boolean =
+        audio.ringerMode != AudioManager.RINGER_MODE_NORMAL
+
+    private fun isDndOn(): Boolean {
         val nm = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-        statusViews["dnd"]?.text =
-            if (nm.isNotificationPolicyAccessGranted &&
-                nm.currentInterruptionFilter != NotificationManager.INTERRUPTION_FILTER_ALL
-            ) "On" else "Off"
-        if (canWrite()) {
-            val rot = try {
-                Settings.System.getInt(context.contentResolver, Settings.System.ACCELEROMETER_ROTATION)
-            } catch (e: Exception) { 1 }
-            statusViews["rotate"]?.text = if (rot == 1) "On" else "Off"
-        } else {
-            statusViews["rotate"]?.text = "Tap"
+        return nm.isNotificationPolicyAccessGranted &&
+            nm.currentInterruptionFilter != NotificationManager.INTERRUPTION_FILTER_ALL
+    }
+
+    private fun refreshTiles() {
+        for ((name, isOnFn) in btnState) {
+            val on = isOnFn()
+            btnViews[name]?.setBackgroundResource(if (on) theme.btnOn else theme.btnOff)
+            btnIcons[name]?.setColorFilter(if (on) theme.iconOnBtn else theme.iconOffBtn)
         }
-        statusViews["airplane"]?.text = ""
-        statusViews["data"]?.text = ""
-        statusViews["wifi"]?.text = ""
-        statusViews["bt"]?.text = ""
-        statusViews["camera"]?.text = ""
-        statusViews["calc"]?.text = ""
-        statusViews["settings"]?.text = ""
-        statusViews["alerts"]?.text = ""
     }
 }
