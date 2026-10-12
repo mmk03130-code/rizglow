@@ -119,7 +119,12 @@ class ControlCenterPanelView(
     }
 
     init {
-        setBackgroundColor(if (compact) theme.dimCompact else theme.dimFull)
+        // Gradient dim (vignette feel) instead of a flat grey overlay —
+        // flat dims are what users call "cheap" vs real blur.
+        background = GradientDrawable(
+            GradientDrawable.Orientation.TOP_BOTTOM,
+            intArrayOf(0xB3000000.toInt(), 0x80000000.toInt(), 0xB3000000.toInt())
+        )
         setOnClickListener { onDismiss() } // tap outside dismisses
 
         panelCard = LinearLayout(context).apply {
