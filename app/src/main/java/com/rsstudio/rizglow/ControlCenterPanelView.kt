@@ -454,8 +454,9 @@ class ControlCenterPanelView(
             TextView(context).apply {
                 this.text = text
                 // Auto-shrink so prev/play/next never clip on narrow cells.
+                // NOTE: signature is (min, max, step, unit) — min must be < max.
                 setAutoSizeTextTypeUniformWithConfiguration(
-                    20, 10, 1, android.util.TypedValue.COMPLEX_UNIT_SP
+                    10, 20, 1, android.util.TypedValue.COMPLEX_UNIT_SP
                 )
                 setTextColor(theme.accent)
                 setShadowLayer(4f, 0f, 2f, shadowColor())
