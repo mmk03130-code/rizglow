@@ -448,10 +448,17 @@ class ControlCenterPanelView(
         val btn = { text: String, key: Int ->
             TextView(context).apply {
                 this.text = text
-                textSize = 22f
+                // Auto-shrink so prev/play/next never clip on narrow cells.
+                setAutoSizeTextTypeUniformWithConfiguration(
+                    20, 10, 1, android.util.TypedValue.COMPLEX_UNIT_SP
+                )
                 setTextColor(theme.accent)
                 setShadowLayer(4f, 0f, 2f, shadowColor())
-                setPadding(dp(12), dp(8), dp(12), dp(8))
+                setPadding(dp(6), dp(6), dp(6), dp(6))
+                gravity = Gravity.CENTER
+                layoutParams = LinearLayout.LayoutParams(
+                    0, LinearLayout.LayoutParams.WRAP_CONTENT, 1f
+                )
                 isClickable = true
                 setOnClickListener { mediaKey(key) }
             }
