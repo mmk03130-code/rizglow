@@ -74,7 +74,7 @@ class ControlCenterPanelView(
         orientation = VERTICAL
         gravity = Gravity.CENTER
         setBackgroundColor(if (compact) theme.dimCompact else theme.dimFull)
-        setPadding(dp(16), dp(if (compact) 24 else 48), dp(16), dp(if (compact) 24 else 48))
+        setPadding(dp(8), dp(if (compact) 16 else 32), dp(8), dp(if (compact) 16 else 32))
         setOnClickListener { onDismiss() } // tap outside dismisses
 
         val panel = LinearLayout(context).apply {
@@ -246,15 +246,14 @@ class ControlCenterPanelView(
         return row
     }
 
-    /** Circular 3D button with centered icon glyph, like the big theme apps.
-     *  ON = accent color button + dark icon; OFF = dark button + light icon.
-     *  No text labels — state reads from the button color. */
+    /** Glass-orb button with centered icon glyph.
+     *  ON = colored glass + dark icon; OFF = dark glass + light icon. */
     private fun tile(name: String, iconRes: Int, isOn: () -> Boolean, onClick: () -> Unit): FrameLayout {
         val size = dp(btnSize())
         val btn = FrameLayout(context).apply {
-            setBackgroundResource(if (isOn()) theme.btnOn else theme.btnOff)
+            setBackgroundResource(if (isOn()) theme.glassOn else theme.glassOff)
             layoutParams = LayoutParams(0, size, 1f).apply {
-                marginEnd = dp(10)
+                marginEnd = dp(8)
             }
             isClickable = true
             isFocusable = true
@@ -280,17 +279,28 @@ class ControlCenterPanelView(
     }
 
     private fun connectivityRow(): LinearLayout {
-        val row = LinearLayout(context).apply {
+        // Frosted group container holding the 4 connectivity orbs
+        val group = LinearLayout(context).apply {
             orientation = HORIZONTAL
-            setPadding(0, 0, 0, dp(if (compact) 10 else 14))
+            gravity = Gravity.CENTER
+            setBackgroundResource(theme.frostBg)
+            setPadding(dp(14), dp(14), dp(14), dp(14))
+            layoutParams = LayoutParams(
+                LayoutParams.MATCH_PARENT,
+                LayoutParams.WRAP_CONTENT
+            ).apply { bottomMargin = dp(if (compact) 10 else 14) }
         }
-        row.addView(tile("airplane", R.drawable.ic_panel_airplane, { false }) {
+        val inner = LinearLayout(context).apply {
+            orientation = HORIZONTAL
+            layoutParams = LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT)
+        }
+        inner.addView(tile("airplane", R.drawable.ic_panel_airplane, { false }) {
             launch(Intent(Settings.ACTION_WIRELESS_SETTINGS))
         })
-        row.addView(tile("data", R.drawable.ic_panel_data, { false }) {
+        inner.addView(tile("data", R.drawable.ic_panel_data, { false }) {
             launch(Intent(Settings.ACTION_NETWORK_OPERATOR_SETTINGS))
         })
-        row.addView(tile("wifi", R.drawable.ic_panel_wifi, { false }) {
+        inner.addView(tile("wifi", R.drawable.ic_panel_wifi, { false }) {
             if (Build.VERSION.SDK_INT >= 29) launch(Intent(Settings.Panel.ACTION_WIFI))
             else launch(Intent(Settings.ACTION_WIFI_SETTINGS))
         })
@@ -298,7 +308,14 @@ class ControlCenterPanelView(
             launch(Intent(Settings.ACTION_BLUETOOTH_SETTINGS))
         }
         (last.layoutParams as LayoutParams).marginEnd = 0
-        row.addView(last)
+        inner.addView(last)
+        group.addView(inner)
+
+        val row = LinearLayout(context).apply {
+            orientation = VERTICAL
+            setPadding(0, 0, 0, 0)
+        }
+        row.addView(group)
         return row
     }
 
@@ -384,7 +401,7 @@ class ControlCenterPanelView(
             gravity = Gravity.CENTER
             setPadding(0, 0, 0, dp(if (compact) 10 else 14))
         }
-        row.addView(sliderCard("\u2600", "Brightness", 255,
+        row.addView(sliderCard(R.drawable.ic_panel_brightness, "Brightness", 255,
             init = {
                 try {
                     Settings.System.getInt(context.contentResolver, Settings.System.SCREEN_BRIGHTNESS)
@@ -405,29 +422,29 @@ class ControlCenterPanelView(
             layoutParams = LayoutParams(dp(12), 1)
         }
         row.addView(spacer)
-        row.addView(sliderCard("\uD83D\uDD0A", "Volume", audio.getStreamMaxVolume(AudioManager.STREAM_MUSIC),
+        row.addView(sliderCard(R.drawable.ic_panel_volume, "Volume", audio.getStreamMaxVolume(AudioManager.STREAM_MUSIC),
             init = { audio.getStreamVolume(AudioManager.STREAM_MUSIC) },
             onChange = { audio.setStreamVolume(AudioManager.STREAM_MUSIC, it, 0) }))
         return row
     }
 
-    private fun sliderCard(icon: String, label: String, max: Int, init: () -> Int, onChange: (Int) -> Unit): LinearLayout {
+    private fun sliderCard(iconRes: Int, label: String, max: Int, init: () -> Int, onChange: (Int) -> Unit): LinearLayout {
         val card = LinearLayout(context).apply {
             orientation = VERTICAL
             gravity = Gravity.CENTER_HORIZONTAL
             setBackgroundResource(theme.sliderBg)
-            setPadding(dp(8), dp(12), dp(8), dp(12))
-            layoutParams = LayoutParams(0, dp(if (compact) 150 else 190), 1f)
+            setPadding(dp(8), dp(10), dp(8), dp(10))
+            layoutParams = LayoutParams(0, dp(if (compact) 130 else 160), 1f)
         }
-        card.addView(TextView(context).apply {
-            text = icon
-            textSize = 26f
-            gravity = Gravity.CENTER
-            setPadding(0, 0, 0, dp(2))
+        card.addView(ImageView(context).apply {
+            setImageResource(iconRes)
+            setColorFilter(theme.accent)
+            val s = dp(24)
+            layoutParams = LayoutParams(s, s).apply { bottomMargin = dp(2) }
         })
         card.addView(TextView(context).apply {
             text = label
-            textSize = 12f
+            textSize = 11f
             setTypeface(typeface, android.graphics.Typeface.BOLD)
             setTextColor(theme.accent)
             setShadowLayer(4f, 0f, 2f, shadowColor())
@@ -536,7 +553,7 @@ class ControlCenterPanelView(
     private fun refreshTiles() {
         for ((name, isOnFn) in btnState) {
             val on = isOnFn()
-            btnViews[name]?.setBackgroundResource(if (on) theme.btnOn else theme.btnOff)
+            btnViews[name]?.setBackgroundResource(if (on) theme.glassOn else theme.glassOff)
             btnIcons[name]?.setColorFilter(if (on) theme.iconOnBtn else theme.iconOffBtn)
         }
     }

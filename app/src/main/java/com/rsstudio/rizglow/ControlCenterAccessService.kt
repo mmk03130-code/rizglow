@@ -245,7 +245,7 @@ fun screenWidthDp(context: Context): Int {
     }
 }
 
-/** Panel width: 24dp margins on phones, capped at 360dp so it stays
- *  thumb-sized on tablets and unfolded foldables. Fixes the 308dp overflow. */
+/** Panel width: 12dp margins, capped at 400dp so it fills the screen
+ *  edge-to-edge like the top theme apps. */
 fun panelWidthDp(context: Context): Int =
-    minOf(360, screenWidthDp(context) - 48).coerceAtLeast(200)
+    minOf(400, screenWidthDp(context) - 24).coerceAtLeast(200)

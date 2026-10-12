@@ -13,6 +13,9 @@ data class PanelTheme(
     val sliderBg: Int,
     val btnOn: Int,       // circular button, ON state
     val btnOff: Int,       // circular button, OFF state
+    val glassOn: Int,      // glass orb button, ON state
+    val glassOff: Int,     // glass orb button, OFF state
+    val frostBg: Int,      // frosted group container
     val iconOnBtn: Int,    // icon tint on ON button (dark)
     val iconOffBtn: Int,   // icon tint on OFF button (light)
     val accent: Int,      // music card + slider label color
@@ -30,6 +33,8 @@ object PanelThemes {
         panelBg = R.drawable.cc_panel_bg, tileBg = R.drawable.cc_tile_bg,
         cardBg = R.drawable.cc_card_bg, sliderBg = R.drawable.cc_slider_bg,
         btnOn = R.drawable.cc_btn_on_velvet, btnOff = R.drawable.cc_btn_off_velvet,
+        glassOn = R.drawable.cc_glass_on_velvet, glassOff = R.drawable.cc_glass_off_velvet,
+        frostBg = R.drawable.cc_frost_velvet,
         iconOnBtn = 0xFF2A1A3A.toInt(), iconOffBtn = 0xFFE0C8FF.toInt(),
         accent = 0xFF6B4A8F.toInt(), textOnTile = 0xFFFFFFFF.toInt(),
         dimCompact = 0x99000000.toInt(), dimFull = 0xCC000000.toInt()
@@ -39,6 +44,8 @@ object PanelThemes {
         panelBg = R.drawable.cc_panel_bg_liquid, tileBg = R.drawable.cc_tile_bg_liquid,
         cardBg = R.drawable.cc_card_bg_liquid, sliderBg = R.drawable.cc_slider_bg_liquid,
         btnOn = R.drawable.cc_btn_on_liquid, btnOff = R.drawable.cc_btn_off_liquid,
+        glassOn = R.drawable.cc_glass_on_liquid, glassOff = R.drawable.cc_glass_off_liquid,
+        frostBg = R.drawable.cc_frost_liquid,
         iconOnBtn = 0xFF4A0E1E.toInt(), iconOffBtn = 0xFFFFD0DC.toInt(),
         accent = 0xFFFFD9E0.toInt(), textOnTile = 0xFFFFFFFF.toInt(),
         dimCompact = 0x99000000.toInt(), dimFull = 0xCC000000.toInt()
@@ -48,6 +55,8 @@ object PanelThemes {
         panelBg = R.drawable.cc_panel_bg_matcha, tileBg = R.drawable.cc_tile_bg_matcha,
         cardBg = R.drawable.cc_card_bg_matcha, sliderBg = R.drawable.cc_slider_bg_matcha,
         btnOn = R.drawable.cc_btn_on_matcha, btnOff = R.drawable.cc_btn_off_matcha,
+        glassOn = R.drawable.cc_glass_on_matcha, glassOff = R.drawable.cc_glass_off_matcha,
+        frostBg = R.drawable.cc_frost_matcha,
         iconOnBtn = 0xFF2A3A28.toInt(), iconOffBtn = 0xFFD8ECCD.toInt(),
         accent = 0xFFFFFFFF.toInt(), textOnTile = 0xFFFFFFFF.toInt(),
         dimCompact = 0x99000000.toInt(), dimFull = 0xCC000000.toInt()
@@ -57,6 +66,8 @@ object PanelThemes {
         panelBg = R.drawable.cc_panel_bg_ice, tileBg = R.drawable.cc_tile_bg_ice,
         cardBg = R.drawable.cc_card_bg_ice, sliderBg = R.drawable.cc_slider_bg_ice,
         btnOn = R.drawable.cc_btn_on_ice, btnOff = R.drawable.cc_btn_off_ice,
+        glassOn = R.drawable.cc_glass_on_ice, glassOff = R.drawable.cc_glass_off_ice,
+        frostBg = R.drawable.cc_frost_ice,
         iconOnBtn = 0xFF2A4A6A.toInt(), iconOffBtn = 0xFFE8F2FA.toInt(),
         accent = 0xFF3A5A7A.toInt(), textOnTile = 0xFF2A3A4A.toInt(),
         dimCompact = 0xAA000000.toInt(), dimFull = 0xDD000000.toInt()
