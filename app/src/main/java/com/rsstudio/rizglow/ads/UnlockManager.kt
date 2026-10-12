@@ -48,8 +48,14 @@ object UnlockManager {
      */
     fun promptUnlock(ctx: Context, bundleId: String, onUnlocked: (() -> Unit)? = null) {
         val activity = ctx as? Activity ?: run {
-            unlock(ctx, bundleId) // non-activity host: cannot show ads
-            onUnlocked?.invoke()
+            // Rewarded ads need an Activity to show. Never unlock here —
+            // doing so would be a free bypass around the rewarded video.
+            // (All current call sites pass an Activity, so this path should
+            // never fire; it exists as a guard for future call sites.)
+            android.util.Log.w("UnlockManager",
+                "promptUnlock called with non-Activity context; unlock refused")
+            Toast.makeText(ctx, "Open Rizglow to unlock bundles",
+                Toast.LENGTH_SHORT).show()
             return
         }
         AlertDialog.Builder(ctx)
