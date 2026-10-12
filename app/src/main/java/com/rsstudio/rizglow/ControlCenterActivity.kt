@@ -15,6 +15,7 @@ class ControlCenterActivity : Activity() {
         overridePendingTransition(0, 0) // no app-launch animation; feels like an overlay
         panel = ControlCenterPanelView(this, onDismiss = { finish() })
         setContentView(panel)
+        panel?.post { panel?.playEntrance() }
     }
 
     override fun onStart() {

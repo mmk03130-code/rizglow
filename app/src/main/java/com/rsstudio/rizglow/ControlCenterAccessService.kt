@@ -177,6 +177,7 @@ class ControlCenterAccessService : AccessibilityService() {
         ControlCenterGate.panelOpen = true
         try {
             wm.addView(v, params)
+            v.post { v.playEntrance() }
         } catch (e: Exception) {
             panelView = null
             ControlCenterGate.panelOpen = false
