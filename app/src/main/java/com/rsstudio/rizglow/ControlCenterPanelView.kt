@@ -657,8 +657,20 @@ class ControlCenterPanelView(
     }
 
     private fun toggleSilent() {
-        audio.ringerMode = if (audio.ringerMode == AudioManager.RINGER_MODE_NORMAL)
-            AudioManager.RINGER_MODE_SILENT else AudioManager.RINGER_MODE_NORMAL
+        // Setting silent mode needs Do Not Disturb access on API 23+ —
+        // without it, setRingerMode throws SecurityException (crashed Test Lab).
+        val nm = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+        if (!nm.isNotificationPolicyAccessGranted) {
+            launch(Intent(Settings.ACTION_NOTIFICATION_POLICY_ACCESS_SETTINGS))
+            Toast.makeText(context, "Allow Do Not Disturb access, then tap again", Toast.LENGTH_LONG).show()
+            return
+        }
+        try {
+            audio.ringerMode = if (audio.ringerMode == AudioManager.RINGER_MODE_NORMAL)
+                AudioManager.RINGER_MODE_SILENT else AudioManager.RINGER_MODE_NORMAL
+        } catch (e: SecurityException) {
+            Toast.makeText(context, "Couldn't change silent mode on this device", Toast.LENGTH_SHORT).show()
+        }
     }
 
     private fun toggleDnd() {
