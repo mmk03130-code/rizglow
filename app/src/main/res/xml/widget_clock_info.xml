@@ -6,7 +6,7 @@
     android:targetCellHeight="2"
     android:updatePeriodMillis="0"
     android:initialLayout="@layout/widget_clock"
-    android:configure="com.rsstudio.rizglow.BundleWidgetConfigActivity"
+    android:configure="com.rsworks.rizglow.BundleWidgetConfigActivity"
     android:description="@string/widget_clock_desc"
     android:previewImage="@drawable/ic_launcher"
     android:widgetCategory="home_screen" />

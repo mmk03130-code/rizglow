@@ -12,7 +12,7 @@ for root, _, files in os.walk("app/src/main/java"):
 bytype = {}
 for t, n in refs:
     bytype.setdefault(t, set()).add(n)
-out = ["package com.rsstudio.rizglow", "", "object R {"]
+out = ["package com.rsworks.rizglow", "", "object R {"]
 i = 0x7f000001
 for t in sorted(bytype):
     out.append(f"    object {t} {{")

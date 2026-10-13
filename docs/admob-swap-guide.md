@@ -7,7 +7,7 @@ unlock logic.
 
 ## Steps
 
-1. **AdMob console → Apps → Add app** (Android, `com.rsstudio.rizglow`).
+1. **AdMob console → Apps → Add app** (Android, `com.rsworks.rizglow`).
    Copy the **App ID** (looks like `ca-app-pub-XXXX~YYYY`).
 
 2. **In the app**, open `app/src/main/AndroidManifest.xml` and replace the
@@ -28,7 +28,7 @@ unlock logic.
    - `ghost_protocol_unlock`
 
 4. **In the app**, open
-   `app/src/main/java/com/rsstudio/rizglow/ads/AdUnits.kt` and replace
+   `app/src/main/java/com/rsworks/rizglow/ads/AdUnits.kt` and replace
    each slot's `TEST_REWARDED` value with that bundle's real ad unit ID
    (looks like `ca-app-pub-XXXX/YYYYYYYYYY`).
 

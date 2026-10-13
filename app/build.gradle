@@ -4,11 +4,11 @@ plugins {
 }
 
 android {
-    namespace = "com.rsstudio.rizglow"
+    namespace = "com.rsworks.rizglow"
     compileSdk = 36
 
     defaultConfig {
-        applicationId = "com.rsstudio.rizglow"
+        applicationId = "com.rsworks.rizglow"
         minSdk = 26
         targetSdk = 36
         versionCode = 15

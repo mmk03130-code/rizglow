@@ -1,6 +1,6 @@
 # The Logic Behind Premium Mobile Design
 ### A teaching guide for making Rizglow's panel truly premium
-*Researched 2026-10-11 · for RS Studio · no code, just the "why" behind every rule*
+*Researched 2026-10-11 · for RS Works · no code, just the "why" behind every rule*
 
 ---
 

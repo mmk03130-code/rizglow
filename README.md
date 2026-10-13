@@ -1,4 +1,4 @@
-# Rizglow™ — by RS Studio
+# Rizglow™ — by RS Works
 
 Aesthetic theming app: curated wallpapers, matching icons, live widgets and
 floating pets — realistic, premium, never kiddie.

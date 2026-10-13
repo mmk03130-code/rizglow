@@ -6,7 +6,7 @@
     android:targetCellHeight="2"
     android:updatePeriodMillis="0"
     android:initialLayout="@layout/widget_battery"
-    android:configure="com.rsstudio.rizglow.BundleWidgetConfigActivity"
+    android:configure="com.rsworks.rizglow.BundleWidgetConfigActivity"
     android:description="@string/widget_battery_desc"
     android:previewImage="@drawable/ic_launcher"
     android:widgetCategory="home_screen" />

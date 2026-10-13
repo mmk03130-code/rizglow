@@ -2,7 +2,7 @@
 <resources>
     <string name="app_name">Rizglow</string>
     <string name="brand_tm">Rizglow™</string>
-    <string name="made_by">Made by RS Studio</string>
+    <string name="made_by">Made by RS Works</string>
     <string name="tagline">Wallpapers • Icons • Widgets • Pets</string>
     <string name="widget_label">Rizglow Icon</string>
     <string name="widget_desc">A Rizglow icon without the system watermark badge. Tap to open the app.</string>
