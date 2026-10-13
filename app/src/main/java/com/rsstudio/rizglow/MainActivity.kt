@@ -22,6 +22,7 @@ import android.widget.GridLayout
 import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.LinearLayout
+import android.widget.ScrollView
 import android.widget.TextView
 import android.widget.Toast
 import kotlin.math.abs
@@ -34,10 +35,18 @@ import com.rsstudio.rizglow.model.RizBundle
 class MainActivity : Activity() {
 
     private lateinit var pages: List<View>
-    private lateinit var dots: List<View>
     private lateinit var labels: List<TextView>
     private lateinit var tabs: List<LinearLayout>
     private var currentTab = 0
+
+    /** Bundle section anchors for deep-jump: bundleId -> its header view. */
+    private val wallpaperAnchors = mutableMapOf<String, View>()
+    private val iconAnchors = mutableMapOf<String, View>()
+
+    companion object {
+        private const val TAB_WALLPAPERS = 1
+        private const val TAB_ICONS = 2
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -56,13 +65,6 @@ class MainActivity : Activity() {
             findViewById(R.id.page_icons),
             findViewById(R.id.page_widgets),
             findViewById(R.id.page_panel)
-        )
-        dots = listOf(
-            findViewById(R.id.dot_discover),
-            findViewById(R.id.dot_wallpapers),
-            findViewById(R.id.dot_icons),
-            findViewById(R.id.dot_widgets),
-            findViewById(R.id.dot_panel)
         )
         labels = listOf(
             findViewById(R.id.label_discover),
@@ -125,10 +127,42 @@ class MainActivity : Activity() {
     private fun selectTab(i: Int) {
         currentTab = i
         pages.forEachIndexed { idx, v -> v.visibility = if (idx == i) View.VISIBLE else View.GONE }
-        dots.forEachIndexed { idx, d -> d.visibility = if (idx == i) View.VISIBLE else View.INVISIBLE }
+        // Premium segmented pills: selected tab gets a purple-tinted pill + ring.
+        tabs.forEachIndexed { idx, t -> t.background = tabPill(idx == i) }
         val text = getColor(R.color.text)
         val muted = getColor(R.color.muted)
-        labels.forEachIndexed { idx, l -> l.setTextColor(if (idx == i) text else muted) }
+        labels.forEachIndexed { idx, l ->
+            l.setTextColor(if (idx == i) text else muted)
+            l.setTypeface(l.typeface, if (idx == i) Typeface.BOLD else Typeface.NORMAL)
+        }
+    }
+
+    private fun tabPill(selected: Boolean): GradientDrawable {
+        return GradientDrawable().apply {
+            shape = GradientDrawable.RECTANGLE
+            cornerRadius = dp(18).toFloat()
+            if (selected) {
+                setColor(0x2BB388FF.toInt())
+                setStroke(dp(1), 0xAAB388FF.toInt())
+            } else {
+                setColor(0x00000000)
+            }
+        }
+    }
+
+    /** Jump to a tab and smooth-scroll to that bundle's own section —
+     *  tapping a bundle opens THAT bundle, never the top of the tab. */
+    private fun openBundle(bundleId: String, tab: Int) {
+        selectTab(tab)
+        val anchors = if (tab == TAB_ICONS) iconAnchors else wallpaperAnchors
+        val target = anchors[bundleId] ?: return
+        val scroll = findViewById<ScrollView>(
+            if (tab == TAB_ICONS) R.id.page_icons else R.id.page_wallpapers)
+        val list = findViewById<LinearLayout>(
+            if (tab == TAB_ICONS) R.id.icons_list else R.id.wallpapers_list)
+        scroll.post {
+            scroll.smoothScrollTo(0, (list.top + target.top - dp(12)).coerceAtLeast(0))
+        }
     }
 
     private fun dp(v: Int): Int = (v * resources.displayMetrics.density).toInt()
@@ -138,71 +172,7 @@ class MainActivity : Activity() {
     private fun populateDiscover() {
         val container = findViewById<LinearLayout>(R.id.discover_list)
         container.removeAllViews()
-        // Panel Themes: horizontal theme switcher (iControl pattern).
-        container.addView(TextView(this).apply {
-            text = "Panel Themes"
-            textSize = 17f
-            setTypeface(typeface, Typeface.BOLD)
-            setTextColor(getColor(R.color.text))
-            setPadding(0, 0, 0, dp(10))
-        })
-        val themeRow = LinearLayout(this).apply {
-            orientation = LinearLayout.HORIZONTAL
-            layoutParams = LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.MATCH_PARENT,
-                LinearLayout.LayoutParams.WRAP_CONTENT
-            ).apply { bottomMargin = dp(16) }
-        }
-        // Panel themes: one card per theme, tap to select + preview.
-        for (t in PanelThemes.ALL) {
-            val selected = PanelThemes.current(this).id == t.id
-            val themeCard = FrameLayout(this).apply {
-                layoutParams = LinearLayout.LayoutParams(dp(140), dp(180)).apply {
-                    marginEnd = dp(12)
-                }
-                background = GradientDrawable().apply {
-                    shape = GradientDrawable.RECTANGLE
-                    cornerRadius = dp(16).toFloat()
-                    setColor(getColor(R.color.surface))
-                    setStroke(dp(if (selected) 3 else 1),
-                        if (selected) 0xFFB388FF.toInt() else getColor(R.color.muted))
-                }
-                clipToOutline = true
-                isClickable = true
-                isFocusable = true
-                setOnClickListener {
-                    PanelThemes.select(this@MainActivity, t.id)
-                    Toast.makeText(this@MainActivity, "${t.name} applied",
-                        Toast.LENGTH_SHORT).show()
-                    populateDiscover() // refresh selection rings
-                    startActivity(Intent(this@MainActivity, ControlCenterActivity::class.java))
-                }
-            }
-            val themePreview = ImageView(this).apply {
-                setImageResource(t.panelBg)
-                scaleType = ImageView.ScaleType.CENTER_CROP
-                layoutParams = FrameLayout.LayoutParams(
-                    FrameLayout.LayoutParams.MATCH_PARENT, dp(120)
-                )
-            }
-            themeCard.addView(themePreview)
-            val themeLabel = TextView(this).apply {
-                text = "${t.name}\n${if (selected) "✓ Active — tap to preview" else "Tap to apply"}"
-                textSize = 13f
-                setTypeface(typeface, Typeface.BOLD)
-                setTextColor(getColor(R.color.text))
-                gravity = Gravity.CENTER
-                setPadding(dp(8), dp(4), dp(8), dp(8))
-                layoutParams = FrameLayout.LayoutParams(
-                    FrameLayout.LayoutParams.MATCH_PARENT,
-                    FrameLayout.LayoutParams.WRAP_CONTENT,
-                    Gravity.BOTTOM
-                )
-            }
-            themeCard.addView(themeLabel)
-            themeRow.addView(themeCard)
-        }
-        container.addView(themeRow)
+        // NOTE: Panel Themes live in their own Panel tab now — Discover is bundles only.
         val inflater = LayoutInflater.from(this)
         for (b in BundleRepository.bundles) {
             val card = inflater.inflate(R.layout.item_bundle, container, false)
@@ -240,17 +210,22 @@ class MainActivity : Activity() {
             val unlocked = UnlockManager.isUnlocked(this, b.id)
             val action = card.findViewById<TextView>(R.id.card_action)
             action.text = if (unlocked) "Open" else "🔒 Unlock"
-            action.setOnClickListener {
+            // Tapping a bundle opens THAT bundle — jump to its own section.
+            val openOrUnlock = {
                 if (UnlockManager.isUnlocked(this, b.id)) {
                     if (b.wallpapers.isEmpty()) {
                         Toast.makeText(this, "Content arrives in the next drop ✨", Toast.LENGTH_SHORT).show()
                     } else {
-                        selectTab(1) // jump to its wallpapers
+                        openBundle(b.id, TAB_WALLPAPERS)
                     }
                 } else {
                     showUnlockDialog(b)
                 }
             }
+            action.setOnClickListener { openOrUnlock() }
+            card.isClickable = true
+            card.isFocusable = true
+            card.setOnClickListener { openOrUnlock() }
             container.addView(card)
         }
     }
@@ -260,6 +235,7 @@ class MainActivity : Activity() {
     private fun buildWallpapersTab() {
         val container = findViewById<LinearLayout>(R.id.wallpapers_list)
         container.removeAllViews()
+        wallpaperAnchors.clear()
         // Favorites shelf first (the "mine" collection).
         val favs = FavoritesManager.all(this)
         if (favs.isNotEmpty()) {
@@ -273,7 +249,9 @@ class MainActivity : Activity() {
             container.addView(wallpaperGrid(favs))
         }
         for (b in BundleRepository.bundles) {
-            container.addView(sectionHeader(b, "wallpapers"))
+            val header = sectionHeader(b, "wallpapers")
+            wallpaperAnchors[b.id] = header
+            container.addView(header)
             when {
                 b.wallpapers.isEmpty() -> {
                     if (!UnlockManager.isUnlocked(this, b.id))
@@ -356,44 +334,53 @@ class MainActivity : Activity() {
                 LinearLayout.LayoutParams.WRAP_CONTENT
             ).apply { bottomMargin = dp(16) }
         }
-        val themeCard = FrameLayout(this).apply {
-            layoutParams = LinearLayout.LayoutParams(dp(140), dp(180)).apply {
-                marginEnd = dp(12)
+        // Panel themes: one card per theme, tap to select + preview.
+        for (t in PanelThemes.ALL) {
+            val selected = PanelThemes.current(this).id == t.id
+            val themeCard = FrameLayout(this).apply {
+                layoutParams = LinearLayout.LayoutParams(dp(140), dp(180)).apply {
+                    marginEnd = dp(12)
+                }
+                background = GradientDrawable().apply {
+                    shape = GradientDrawable.RECTANGLE
+                    cornerRadius = dp(16).toFloat()
+                    setColor(getColor(R.color.surface))
+                    setStroke(dp(if (selected) 3 else 1),
+                        if (selected) 0xFFB388FF.toInt() else getColor(R.color.muted))
+                }
+                clipToOutline = true
+                isClickable = true
+                isFocusable = true
+                setOnClickListener {
+                    PanelThemes.select(this@MainActivity, t.id)
+                    Toast.makeText(this@MainActivity, "${t.name} applied",
+                        Toast.LENGTH_SHORT).show()
+                    buildPanelTab() // refresh selection rings
+                    startActivity(Intent(this@MainActivity, ControlCenterActivity::class.java))
+                }
             }
-            background = GradientDrawable().apply {
-                shape = GradientDrawable.RECTANGLE
-                cornerRadius = dp(16).toFloat()
-                setColor(getColor(R.color.surface))
-                setStroke(dp(2), 0xFFB388FF.toInt())
-            }
-            clipToOutline = true
-            isClickable = true
-            isFocusable = true
-            setOnClickListener {
-                startActivity(Intent(this@MainActivity, ControlCenterActivity::class.java))
-            }
+            themeCard.addView(ImageView(this).apply {
+                setImageResource(t.panelBg)
+                scaleType = ImageView.ScaleType.CENTER_CROP
+                layoutParams = FrameLayout.LayoutParams(
+                    FrameLayout.LayoutParams.MATCH_PARENT, dp(120)
+                )
+            })
+            themeCard.addView(TextView(this).apply {
+                text = "${t.name}\n${if (selected) "✓ Active — tap to preview" else "Tap to apply"}"
+                textSize = 13f
+                setTypeface(typeface, Typeface.BOLD)
+                setTextColor(getColor(R.color.text))
+                gravity = Gravity.CENTER
+                setPadding(dp(8), dp(4), dp(8), dp(8))
+                layoutParams = FrameLayout.LayoutParams(
+                    FrameLayout.LayoutParams.MATCH_PARENT,
+                    FrameLayout.LayoutParams.WRAP_CONTENT,
+                    Gravity.BOTTOM
+                )
+            })
+            themeRow.addView(themeCard)
         }
-        themeCard.addView(ImageView(this).apply {
-            setImageResource(R.drawable.cc_panel_bg)
-            scaleType = ImageView.ScaleType.CENTER_CROP
-            layoutParams = FrameLayout.LayoutParams(
-                FrameLayout.LayoutParams.MATCH_PARENT, dp(120)
-            )
-        })
-        themeCard.addView(TextView(this).apply {
-            text = "Midnight Velvet\nTap to preview"
-            textSize = 13f
-            setTypeface(typeface, Typeface.BOLD)
-            setTextColor(getColor(R.color.text))
-            gravity = Gravity.CENTER
-            setPadding(dp(8), dp(4), dp(8), dp(8))
-            layoutParams = FrameLayout.LayoutParams(
-                FrameLayout.LayoutParams.MATCH_PARENT,
-                FrameLayout.LayoutParams.WRAP_CONTENT,
-                Gravity.BOTTOM
-            )
-        })
-        themeRow.addView(themeCard)
         themeRow.addView(TextView(this).apply {
             text = "+\nMore soon"
             textSize = 15f
@@ -609,6 +596,7 @@ class MainActivity : Activity() {
     private fun buildIconsTab() {
         val container = findViewById<LinearLayout>(R.id.icons_list)
         container.removeAllViews()
+        iconAnchors.clear()
         // Launcher banner: tailored guidance (CandyBar pattern).
         val launchers = LauncherDetector.installed(this)
         val banner = TextView(this).apply {
@@ -632,7 +620,9 @@ class MainActivity : Activity() {
         }
         container.addView(banner)
         for (b in BundleRepository.bundles) {
-            container.addView(sectionHeader(b, "icons"))
+            val header = sectionHeader(b, "icons")
+            iconAnchors[b.id] = header
+            container.addView(header)
             when {
                 b.icons.isEmpty() -> {
                     if (!UnlockManager.isUnlocked(this, b.id))

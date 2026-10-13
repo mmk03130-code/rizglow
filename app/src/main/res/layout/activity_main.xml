@@ -235,21 +235,29 @@
         </LinearLayout>
     </FrameLayout>
 
-    <!-- bottom tabs -->
+    <!-- hairline divider above the tab bar -->
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="#1FFFFFFF" />
+
+    <!-- bottom tabs: premium segmented pills -->
     <LinearLayout
+        android:id="@+id/tab_bar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:background="@color/surface"
+        android:background="@drawable/tab_bar_bg"
         android:paddingTop="10dp"
-        android:paddingBottom="14dp">
+        android:paddingBottom="14dp"
+        android:paddingStart="8dp"
+        android:paddingEnd="8dp">
 
         <LinearLayout
             android:id="@+id/tab_discover"
             android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1"
-            android:orientation="vertical" android:gravity="center" android:padding="6dp">
-            <View android:id="@+id/dot_discover" android:layout_width="6dp" android:layout_height="6dp"
-                android:background="@drawable/dot_selected" android:layout_marginBottom="6dp" />
+            android:layout_marginStart="4dp" android:layout_marginEnd="4dp"
+            android:orientation="vertical" android:gravity="center" android:padding="10dp">
             <TextView android:id="@+id/label_discover" android:layout_width="wrap_content" android:layout_height="wrap_content"
                 android:text="Discover" android:textSize="13sp" android:textColor="@color/text" />
         </LinearLayout>
@@ -257,10 +265,8 @@
         <LinearLayout
             android:id="@+id/tab_wallpapers"
             android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1"
-            android:orientation="vertical" android:gravity="center" android:padding="6dp">
-            <View android:id="@+id/dot_wallpapers" android:layout_width="6dp" android:layout_height="6dp"
-                android:background="@drawable/dot_selected" android:layout_marginBottom="6dp"
-                android:visibility="invisible" />
+            android:layout_marginStart="4dp" android:layout_marginEnd="4dp"
+            android:orientation="vertical" android:gravity="center" android:padding="10dp">
             <TextView android:id="@+id/label_wallpapers" android:layout_width="wrap_content" android:layout_height="wrap_content"
                 android:text="Wallpapers" android:textSize="13sp" android:textColor="@color/muted" />
         </LinearLayout>
@@ -268,10 +274,8 @@
         <LinearLayout
             android:id="@+id/tab_icons"
             android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1"
-            android:orientation="vertical" android:gravity="center" android:padding="6dp">
-            <View android:id="@+id/dot_icons" android:layout_width="6dp" android:layout_height="6dp"
-                android:background="@drawable/dot_selected" android:layout_marginBottom="6dp"
-                android:visibility="invisible" />
+            android:layout_marginStart="4dp" android:layout_marginEnd="4dp"
+            android:orientation="vertical" android:gravity="center" android:padding="10dp">
             <TextView android:id="@+id/label_icons" android:layout_width="wrap_content" android:layout_height="wrap_content"
                 android:text="Icons" android:textSize="13sp" android:textColor="@color/muted" />
         </LinearLayout>
@@ -279,10 +283,8 @@
         <LinearLayout
             android:id="@+id/tab_widgets"
             android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1"
-            android:orientation="vertical" android:gravity="center" android:padding="6dp">
-            <View android:id="@+id/dot_widgets" android:layout_width="6dp" android:layout_height="6dp"
-                android:background="@drawable/dot_selected" android:layout_marginBottom="6dp"
-                android:visibility="invisible" />
+            android:layout_marginStart="4dp" android:layout_marginEnd="4dp"
+            android:orientation="vertical" android:gravity="center" android:padding="10dp">
             <TextView android:id="@+id/label_widgets" android:layout_width="wrap_content" android:layout_height="wrap_content"
                 android:text="Widgets" android:textSize="13sp" android:textColor="@color/muted" />
         </LinearLayout>
@@ -290,10 +292,8 @@
         <LinearLayout
             android:id="@+id/tab_panel"
             android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1"
-            android:orientation="vertical" android:gravity="center" android:padding="6dp">
-            <View android:id="@+id/dot_panel" android:layout_width="6dp" android:layout_height="6dp"
-                android:background="@drawable/dot_selected" android:layout_marginBottom="6dp"
-                android:visibility="invisible" />
+            android:layout_marginStart="4dp" android:layout_marginEnd="4dp"
+            android:orientation="vertical" android:gravity="center" android:padding="10dp">
             <TextView android:id="@+id/label_panel" android:layout_width="wrap_content" android:layout_height="wrap_content"
                 android:text="Panel" android:textSize="13sp" android:textColor="@color/muted" />
         </LinearLayout>
