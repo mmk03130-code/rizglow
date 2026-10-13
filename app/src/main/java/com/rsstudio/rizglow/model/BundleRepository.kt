@@ -535,6 +535,141 @@ object BundleRepository {
         IconItem(R.drawable.ic_gp_reddit, "Reddit")
     )
 
+    private val daWallpapers = listOf(
+        R.drawable.wp_da_dark_academia_01,
+        R.drawable.wp_da_dark_academia_02,
+        R.drawable.wp_da_dark_academia_03,
+        R.drawable.wp_da_dark_academia_04,
+        R.drawable.wp_da_dark_academia_05,
+        R.drawable.wp_da_dark_academia_06
+    )
+    private val daIcons = listOf(
+        IconItem(R.drawable.ic_da_phone, "Phone"),
+        IconItem(R.drawable.ic_da_messages, "Messages"),
+        IconItem(R.drawable.ic_da_camera, "Camera"),
+        IconItem(R.drawable.ic_da_photos, "Photos"),
+        IconItem(R.drawable.ic_da_clock, "Clock"),
+        IconItem(R.drawable.ic_da_settings, "Settings"),
+        IconItem(R.drawable.ic_da_music, "Music"),
+        IconItem(R.drawable.ic_da_browser, "Browser"),
+        IconItem(R.drawable.ic_da_maps, "Maps"),
+        IconItem(R.drawable.ic_da_mail, "Mail"),
+        IconItem(R.drawable.ic_da_calendar, "Calendar"),
+        IconItem(R.drawable.ic_da_contacts, "Contacts"),
+        IconItem(R.drawable.ic_da_calculator, "Calculator"),
+        IconItem(R.drawable.ic_da_files, "Files"),
+        IconItem(R.drawable.ic_da_video, "Video"),
+        IconItem(R.drawable.ic_da_games, "Games"),
+        IconItem(R.drawable.ic_da_recorder, "Recorder"),
+        IconItem(R.drawable.ic_da_weather, "Weather"),
+        IconItem(R.drawable.ic_da_notes, "Notes"),
+        IconItem(R.drawable.ic_da_compass, "Compass"),
+        IconItem(R.drawable.ic_da_reminders, "Reminders"),
+        IconItem(R.drawable.ic_da_health, "Health"),
+        IconItem(R.drawable.ic_da_wallet, "Wallet"),
+        IconItem(R.drawable.ic_da_favorites, "Favorites"),
+        IconItem(R.drawable.ic_da_whatsapp, "WhatsApp"),
+        IconItem(R.drawable.ic_da_whatsapp_business, "WhatsApp Business"),
+        IconItem(R.drawable.ic_da_instagram, "Instagram"),
+        IconItem(R.drawable.ic_da_tiktok, "TikTok"),
+        IconItem(R.drawable.ic_da_facebook, "Facebook"),
+        IconItem(R.drawable.ic_da_x, "X"),
+        IconItem(R.drawable.ic_da_snapchat, "Snapchat"),
+        IconItem(R.drawable.ic_da_pinterest, "Pinterest"),
+        IconItem(R.drawable.ic_da_telegram, "Telegram"),
+        IconItem(R.drawable.ic_da_google, "Google")
+    )
+
+    private val omWallpapers = listOf(
+        R.drawable.wp_om_old_money_01,
+        R.drawable.wp_om_old_money_02,
+        R.drawable.wp_om_old_money_03,
+        R.drawable.wp_om_old_money_04,
+        R.drawable.wp_om_old_money_05,
+        R.drawable.wp_om_old_money_06
+    )
+    private val omIcons = listOf(
+        IconItem(R.drawable.ic_om_phone, "Phone"),
+        IconItem(R.drawable.ic_om_messages, "Messages"),
+        IconItem(R.drawable.ic_om_camera, "Camera"),
+        IconItem(R.drawable.ic_om_photos, "Photos"),
+        IconItem(R.drawable.ic_om_clock, "Clock"),
+        IconItem(R.drawable.ic_om_settings, "Settings"),
+        IconItem(R.drawable.ic_om_music, "Music"),
+        IconItem(R.drawable.ic_om_browser, "Browser"),
+        IconItem(R.drawable.ic_om_maps, "Maps"),
+        IconItem(R.drawable.ic_om_mail, "Mail"),
+        IconItem(R.drawable.ic_om_calendar, "Calendar"),
+        IconItem(R.drawable.ic_om_contacts, "Contacts"),
+        IconItem(R.drawable.ic_om_calculator, "Calculator"),
+        IconItem(R.drawable.ic_om_files, "Files"),
+        IconItem(R.drawable.ic_om_video, "Video"),
+        IconItem(R.drawable.ic_om_games, "Games"),
+        IconItem(R.drawable.ic_om_recorder, "Recorder"),
+        IconItem(R.drawable.ic_om_weather, "Weather"),
+        IconItem(R.drawable.ic_om_notes, "Notes"),
+        IconItem(R.drawable.ic_om_compass, "Compass"),
+        IconItem(R.drawable.ic_om_reminders, "Reminders"),
+        IconItem(R.drawable.ic_om_health, "Health"),
+        IconItem(R.drawable.ic_om_wallet, "Wallet"),
+        IconItem(R.drawable.ic_om_favorites, "Favorites"),
+        IconItem(R.drawable.ic_om_whatsapp, "WhatsApp"),
+        IconItem(R.drawable.ic_om_whatsapp_business, "WhatsApp Business"),
+        IconItem(R.drawable.ic_om_instagram, "Instagram"),
+        IconItem(R.drawable.ic_om_tiktok, "TikTok"),
+        IconItem(R.drawable.ic_om_facebook, "Facebook"),
+        IconItem(R.drawable.ic_om_x, "X"),
+        IconItem(R.drawable.ic_om_snapchat, "Snapchat"),
+        IconItem(R.drawable.ic_om_pinterest, "Pinterest"),
+        IconItem(R.drawable.ic_om_telegram, "Telegram"),
+        IconItem(R.drawable.ic_om_google, "Google")
+    )
+
+    private val nsWallpapers = listOf(
+        R.drawable.wp_ns_moody_urban_night_01,
+        R.drawable.wp_ns_moody_urban_night_02,
+        R.drawable.wp_ns_moody_urban_night_03,
+        R.drawable.wp_ns_moody_urban_night_04,
+        R.drawable.wp_ns_moody_urban_night_05,
+        R.drawable.wp_ns_moody_urban_night_06
+    )
+    private val nsIcons = listOf(
+        IconItem(R.drawable.ic_ns_phone, "Phone"),
+        IconItem(R.drawable.ic_ns_messages, "Messages"),
+        IconItem(R.drawable.ic_ns_camera, "Camera"),
+        IconItem(R.drawable.ic_ns_photos, "Photos"),
+        IconItem(R.drawable.ic_ns_clock, "Clock"),
+        IconItem(R.drawable.ic_ns_settings, "Settings"),
+        IconItem(R.drawable.ic_ns_music, "Music"),
+        IconItem(R.drawable.ic_ns_browser, "Browser"),
+        IconItem(R.drawable.ic_ns_maps, "Maps"),
+        IconItem(R.drawable.ic_ns_mail, "Mail"),
+        IconItem(R.drawable.ic_ns_calendar, "Calendar"),
+        IconItem(R.drawable.ic_ns_contacts, "Contacts"),
+        IconItem(R.drawable.ic_ns_calculator, "Calculator"),
+        IconItem(R.drawable.ic_ns_files, "Files"),
+        IconItem(R.drawable.ic_ns_video, "Video"),
+        IconItem(R.drawable.ic_ns_games, "Games"),
+        IconItem(R.drawable.ic_ns_recorder, "Recorder"),
+        IconItem(R.drawable.ic_ns_weather, "Weather"),
+        IconItem(R.drawable.ic_ns_notes, "Notes"),
+        IconItem(R.drawable.ic_ns_compass, "Compass"),
+        IconItem(R.drawable.ic_ns_reminders, "Reminders"),
+        IconItem(R.drawable.ic_ns_health, "Health"),
+        IconItem(R.drawable.ic_ns_wallet, "Wallet"),
+        IconItem(R.drawable.ic_ns_favorites, "Favorites"),
+        IconItem(R.drawable.ic_ns_whatsapp, "WhatsApp"),
+        IconItem(R.drawable.ic_ns_whatsapp_business, "WhatsApp Business"),
+        IconItem(R.drawable.ic_ns_instagram, "Instagram"),
+        IconItem(R.drawable.ic_ns_tiktok, "TikTok"),
+        IconItem(R.drawable.ic_ns_facebook, "Facebook"),
+        IconItem(R.drawable.ic_ns_x, "X"),
+        IconItem(R.drawable.ic_ns_snapchat, "Snapchat"),
+        IconItem(R.drawable.ic_ns_pinterest, "Pinterest"),
+        IconItem(R.drawable.ic_ns_telegram, "Telegram"),
+        IconItem(R.drawable.ic_ns_google, "Google")
+    )
+
     val bundles: List<RizBundle> = listOf(
         RizBundle(
             id = "midnight_velvet",
@@ -615,6 +750,30 @@ object BundleRepository {
             accentColor = 0xFF00E676.toInt(),
             wallpapers = gpWallpapers,
             icons = gpIcons
+        ),
+        RizBundle(
+            id = "dark_academia",
+            name = "Dark Academia",
+            tagline = "Old-library browns & brass",
+            accentColor = 0xFFD9A45B.toInt(),
+            wallpapers = daWallpapers,
+            icons = daIcons
+        ),
+        RizBundle(
+            id = "old_money",
+            name = "Old Money",
+            tagline = "Champagne, racing green & gold",
+            accentColor = 0xFF2E4A34.toInt(),
+            wallpapers = omWallpapers,
+            icons = omIcons
+        ),
+        RizBundle(
+            id = "noir_streets",
+            name = "Noir Streets",
+            tagline = "Midnight city neon",
+            accentColor = 0xFF13BF83.toInt(),
+            wallpapers = nsWallpapers,
+            icons = nsIcons
         )
     )
 }

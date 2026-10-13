@@ -13,6 +13,9 @@ object WidgetStyle {
     fun forBundle(bundleId: String): Style = when (bundleId) {
         "coquette_glow" -> Style(R.drawable.widget_bg_cg, 0xFFE08AAF.toInt(), 0xFF8A6B78.toInt())
         "neon_dusk" -> Style(R.drawable.widget_bg_nd, 0xFF8F83FF.toInt(), 0xFF9AA0B5.toInt())
+        "dark_academia" -> Style(R.drawable.widget_bg_da, 0xFFD9A45B.toInt(), 0xFF8A7A64.toInt())
+        "old_money" -> Style(R.drawable.widget_bg_om, 0xFF2E4A34.toInt(), 0xFF6B5F4C.toInt())
+        "noir_streets" -> Style(R.drawable.widget_bg_ns, 0xFF13BF83.toInt(), 0xFF5F7A72.toInt())
         else -> Style(R.drawable.widget_bg_mv, 0xFFB388FF.toInt(), 0xFF9A8FA8.toInt())
     }
 

@@ -34,7 +34,10 @@ object AdUnits {
         "street_phantom" to TEST_REWARDED, // slot: street_phantom_unlock
         "midnight_academy" to TEST_REWARDED, // slot: midnight_academy_unlock
         "midnight_drive" to TEST_REWARDED, // slot: midnight_drive_unlock
-        "ghost_protocol" to TEST_REWARDED  // slot: ghost_protocol_unlock
+        "ghost_protocol" to TEST_REWARDED, // slot: ghost_protocol_unlock
+        "dark_academia" to TEST_REWARDED, // slot: dark_academia_unlock
+        "old_money" to TEST_REWARDED, // slot: old_money_unlock
+        "noir_streets" to TEST_REWARDED  // slot: noir_streets_unlock
     )
 
     /** Ad unit ID for a bundle's unlock placement. Falls back to the test ID. */
